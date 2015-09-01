@@ -1,0 +1,77 @@
+<div class="ant-block-editor" data-metadata="{{ metadata }}">
+
+    <script type="text/template" class="ant-template-base">
+        {# TODO: make use of metadata_edit and data-metadata #}
+        <div class="wrapper-comp-settings is-active" data-metadata="">
+            <ul class="list-input settings-list">
+
+                <li class="field comp-setting-entry">
+                    <div class="wrapper-comp-setting">
+                        <label class="label setting-label">Display name</label>
+                        <input class="input setting-input" type="text" name="display_name" value="<%= display_name %>" />
+                    </div>
+                    <!--<span class="tip setting-help">Display name</span>-->
+                </li>
+
+                <li class="field comp-setting-entry">
+                    <div class="wrapper-comp-setting">
+                        <label class="label setting-label">Course id</label>
+                        <input class="input setting-input" type="text" name="course_id" value="<%= course_id %>" />
+                    </div>
+                    <!--<span class="tip setting-help">Display name</span>-->
+                </li>
+
+                <li class="field comp-setting-entry">
+                    <div class="wrapper-comp-setting">
+                        <label class="label setting-label">Unit id</label>
+                        <input class="input setting-input" type="text" name="unit_id" value="<%= unit_id %>" />
+                    </div>
+                    <!--<span class="tip setting-help">Course id</span>-->
+                </li>
+
+                <li class="field comp-setting-entry">
+                    <div class="wrapper-comp-setting">
+                        <label class="label setting-label">Time limit</label>
+                        <input class="input setting-input" type="text" name="time_limit" value="<%= time_limit %>" />
+                    </div>
+                    <span class="tip setting-help">In minutes</span>
+                </li>
+
+                <li class="field comp-setting-entry">
+                    <div class="wrapper-comp-setting">
+                        <label class="label setting-label">Attempts limit</label>
+                        <input class="input setting-input" type="text" name="attempts_limit" value="<%= attempts_limit %>" />
+                    </div>
+                    <span class="tip setting-help">Number of attempts</span>
+                </li>
+
+                <li class="field comp-setting-entry">
+                    <div class="wrapper-comp-setting">
+                        <label class="label setting-label">Description</label>
+                        <textarea class="input setting-input" name="content" style="width: 45%; height: 300px;"><%= content %></textarea>
+                    </div>
+                    <!--<span class="tip setting-help">Course id</span>-->
+                </li>
+
+                <li class="field comp-setting-entry">
+                    <div class="wrapper-comp-setting">
+                        <label class="label setting-label">Lab URL</label>
+                        <input class="input setting-input" type="text" name="lab_url" value="<%= lab_url %>" />
+                    </div>
+                    <span class="tip setting-help">API lab url</span>
+                </li>
+
+                <li class="field comp-setting-entry">
+                    <div class="wrapper-comp-setting">
+                        <label class="label setting-label">Attempts URL</label>
+                        <input class="input setting-input" type="text" name="attempts_url" value="<%= attempts_url %>" />
+                    </div>
+                    <span class="tip setting-help">API url for getting attempts</span>
+                </li>
+
+            </ul>
+        </div>
+    </script>
+
+    <div class="ant-block-content"></div>
+</div>

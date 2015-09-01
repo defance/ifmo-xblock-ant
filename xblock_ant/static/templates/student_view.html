@@ -1,0 +1,76 @@
+<section class="ant-block xmodule_display xmodule_CapaModule " data-student-state="{{student_state}}" {% if is_staff %}data-is-staff="True"{% endif %}>
+
+    <script type="text/template" id="template-ant-block">
+
+        <h2 class="problem-header"><%= meta.name %></h2>
+
+        <%
+            if (score.max != 0) {
+                if (score.earned != 0  || attempts.used > 0) {
+                    points_str = '(' + score.earned + '/' + score.max + ' points)'
+                } else {
+                    points_str = '(' + score.max + ' points possible)'
+                }
+            }
+        %>
+        <% if(points_str != 'undefined'){ %><div class="problem-progress"><%= points_str %></div><% } %>
+
+        <div><%= meta.text %></div>
+
+        <% if (ant_status == 'RUNNING') { %>
+            <div style="background-color: darkorange;">Lab is now running.</div>
+        <% } %>
+
+        <div class="action">
+            {% if not past_due %}
+            <input type="button" class="ant-start-lab" value="Start" />
+            <input type="button" class="ant-check-lab" value="Check" />
+            {% else %}
+            <div>
+                <div class="submission_feedback">Время, отведённое на выполнение лабораторной работы, истекло</div>
+            </div>
+            {% endif %}
+            <% if (attempts.limit > 0) { %>
+                <div class="submission_feedback">
+                    You have used <%= attempts.used %> of <%= attempts.limit %> submissions
+                </div>
+            <% } %>
+        </div>
+    </script>
+
+    <div class="ant-content problem">
+        {{student_state}}
+    </div>
+
+    {% if is_staff %}
+        {% if not is_studio %}
+            <div class="wrap-instructor-info">
+                <a class="instructor-info-action" href="#{{id}}-debug-modal" id="{{id}}-debug-button">Show debug info</a>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    {% if is_staff %}
+        {% if not is_studio %}
+            <section aria-hidden="true" class="modal staff-modal" id="{{id}}-debug-modal" style="width: 800px">
+                <div class="inner-wrapper" style="color: black">
+                    <header><h2>State</h2></header>
+                    <div>&nbsp;</div>
+                    <div>
+                        <label for="{{id}}-staff-user-input">User sso id: </label>
+                        <input type="text" id="{{id}}-staff-user-input" name="user">
+                        <button value="" class="button staff-get-state-btn" id="{{id}}-staff-get-state-button">Get state</button>
+                    </div>
+                    <hr/>
+                    <div id="{{id}}-staff-info">
+                        <p>Your current state is below. State for specific student comes here soon. Whenever.</p>
+                        <div class="staff-info-container" style="max-height: 600px; overflow-y: scroll;">
+                            <pre>{{state}}</pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    {% endif %}
+
+</section>
