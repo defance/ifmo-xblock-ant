@@ -15,7 +15,7 @@ setup(
         'celery',
         'requests',
         'XBlock',
-        'ifmo_celery_grader',
+        'ifmo_edx_celery_grader',
     ],
     dependency_links=[
         'git+http://vcs.de.ifmo.ru/scm/git/ifmo-edx-celery-grader#egg=ifmo-edx-celery-grader'
