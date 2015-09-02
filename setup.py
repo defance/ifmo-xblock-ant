@@ -7,7 +7,7 @@ README = open(os.path.join(os.path.dirname(__file__), 'README.md')).read()
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='ifmo-edx-celery-grader',
+    name='ifmo-xblock-academicnt',
     version='0.9',
     install_requires=[
         'django',
