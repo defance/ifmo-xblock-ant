@@ -15,10 +15,10 @@ setup(
         'celery',
         'requests',
         'XBlock',
-        'ifmo_edx_celery_grader',
+        'ifmo_celery_grader',
     ],
     dependency_links=[
-        'git+http://vcs.de.ifmo.ru/scm/git/ifmo-edx-celery-grader#egg=ifmo-edx-celery-grader'
+        'git+http://vcs.de.ifmo.ru/scm/git/ifmo-edx-celery-grader#egg=ifmo-celery-grader'
     ],
     packages=[
         'xblock_ant',
