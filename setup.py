@@ -42,7 +42,7 @@ setup(
     ],
     entry_points={
         'xblock.v1': [
-            'ifmo_xblock_ant = xblock_ant:AcademicNTXBlock',
+            'ifmo_xblock_ant = xblock_ant:AntXBlock',
         ]
     },
 )

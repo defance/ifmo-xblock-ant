@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from ifmo_celery_grader.models import GraderTask
-from ant_xblock.ant_xblock_fields import AntXBlockFields
-from ant_xblock import utils as ant_utils
+from xblock_ant.ant_xblock_fields import AntXBlockFields
+from xblock_ant import utils as ant_utils
 from celery.states import PENDING
 from courseware.models import StudentModule
 from xblock.core import XBlock
@@ -16,7 +16,7 @@ import json
 import pytz
 import requests
 
-from ant_xblock.tasks import submit_delayed_ant_precheck, submit_ant_check, reserve_task
+from xblock_ant.tasks import submit_delayed_ant_precheck, submit_ant_check, reserve_task
 from .settings import *
 
 
