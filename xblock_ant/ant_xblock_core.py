@@ -290,7 +290,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         :return: Содержимое
         """
-        return ant_utils.resource_string(file_name, package_name='ant_xblock')
+        return ant_utils.resource_string(file_name, package_name='xblock_ant')
 
     @staticmethod
     def _render_template(template_name, context=None):
@@ -302,7 +302,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         :return: Содержимое
         """
-        return ant_utils.render_template(template_name, context=context, package_name='ant_xblock')
+        return ant_utils.render_template(template_name, context=context, package_name='xblock_ant')
 
     def _get_task_data(self):
         """
