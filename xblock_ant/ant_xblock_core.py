@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 from ifmo_celery_grader.models import GraderTask
 from xblock_ant.ant_xblock_fields import AntXBlockFields
 from xblock_ant import utils as ant_utils
@@ -39,6 +38,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         fragment = Fragment()
         fragment.add_content(self._render_template('static/templates/student_view.html', template_context))
         fragment.add_javascript(self._get_resource('static/js/student_view.js'))
+        fragment.add_css(self._get_resource('static/css/student_view_style.css'))
         fragment.initialize_js('AntXBlockShow')
         return fragment
 
@@ -245,6 +245,14 @@ class AntXBlock(AntXBlockFields, XBlock):
         self.save()
 
     def _get_student_context(self):
+        grader_tasks = GraderTask.objects.filter(module_id = self.location)
+        tasks = []
+        for task in grader_tasks:
+          tasks.append({'task_id':task.task_id,
+                        'module_id':task.module_id,
+                        'user_target':task.user_target,
+                        'task_type':task.task_type,
+                        'task_state':task.task_state})
         """
         Получить контекст текущего пользователя для отображения шаблона.
         :return:
@@ -278,7 +286,8 @@ class AntXBlock(AntXBlockFields, XBlock):
             'past_due': self._past_due(),
 
             # This is probably studio, find out some more ways to determine this
-            'is_studio': self.scope_ids.user_id is None
+            'is_studio': self.scope_ids.user_id is None,
+            'tasks':tasks
         }
 
     @staticmethod

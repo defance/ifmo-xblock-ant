@@ -45,6 +45,9 @@
     {% if is_staff %}
         {% if not is_studio %}
             <div class="wrap-instructor-info">
+            	<a class="instructor-info-action" href="#{{id}}-tasks-modal" id="{{id}}-show-tasks-button">Show tasks</a>
+            </div>
+            <div class="wrap-instructor-info">
                 <a class="instructor-info-action" href="#{{id}}-debug-modal" id="{{id}}-debug-button">Show debug info</a>
             </div>
         {% endif %}
@@ -72,5 +75,36 @@
             </section>
         {% endif %}
     {% endif %}
+
+    {% if is_staff %}
+        {% if not is_studio %}
+            <section aria-hidden="true" class="modal staff-modal" id="{{id}}-tasks-modal" style="width: 800px">
+                <div class="inner-wrapper" style="color: black">
+                    <header><h2>Grader tasks</h2></header>
+                    <div>&nbsp;</div>
+                    <div id="tasks-table">
+                        <table><tbody>
+			    <caption>Module id: {{ tasks.0.module_id }}</caption>
+                            <tr>
+                               <th>Task id</th>
+                               <th>User target</th>
+                               <th>Task type</th>
+                               <th>Task state</th>
+                            </tr>
+                            {% for task in tasks %}
+                            <tr>
+                               <td>{{ task.task_id }}</td>
+                               <td>{{ task.user_target }}</td>
+                               <td>{{ task.task_type }}</td>
+                               <td>{{ task.task_state }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody></table>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+    {% endif %}
+
 
 </section>
