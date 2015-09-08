@@ -1,0 +1,21 @@
+#tasks-table{
+	overflow: scroll;
+	white-space: nowrap;
+	max-height: 450px;	
+}
+
+#tasks-table table{
+	margin: 20px;
+}
+
+#tasks-table td{
+	border: solid 1px lightgray;
+	padding: 5px;
+}
+
+#tasks-table th{
+	border: solid 1px black;
+	padding: 5px;
+	text-align: center;
+	font-weight: 700;
+}
