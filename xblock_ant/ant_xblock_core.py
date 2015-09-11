@@ -169,8 +169,15 @@ class AntXBlock(AntXBlockFields, XBlock):
         lab_url = self.lab_url % lab_meta
         return HTTPFound(location=lab_url)
 
+    @XBlock.handler
+    def check_lab_external(self, request, suffix=''):
+        self._check_lab(request.GET)
+
     @XBlock.json_handler
     def check_lab(self, data, suffix=''):
+        self._check_lab(data)
+
+    def _check_lab(self, data):
         """
         Проверить лабораторную работу.
 
@@ -178,6 +185,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         :param data:
         :param suffix:
+        :param email: 
         :return:
         """
 
@@ -188,10 +196,11 @@ class AntXBlock(AntXBlockFields, XBlock):
                 "message": "Время, отведённое на лабораторную работу, истекло.",
             })
 
+        student_input = self._get_student_input() if data.get('email') is not None else self._get_student_input_no_auth()
         task = reserve_task(self,
                             grader_payload=self._get_grader_payload(),
                             system_payload=self._get_system_payload(),
-                            student_input=self._get_student_input(),
+                            student_input=student_input,
                             save=True,
                             task_type='ANT_CHECK')
         submit_ant_check(task, countdown=0)
@@ -261,7 +270,7 @@ class AntXBlock(AntXBlockFields, XBlock):
             'student_state': json.dumps(
                 {
                     'score': {
-                        'earned': self.score,
+                        'earned': round(self.score, 2),
                         'max': self.weight,
                     },
                     'attempts': {
@@ -368,6 +377,15 @@ class AntXBlock(AntXBlockFields, XBlock):
             'user_id': self.runtime.get_real_user(self.runtime.anonymous_student_id).username,
             'user_email': self.runtime.get_real_user(self.runtime.anonymous_student_id).email,
         }
+
+    def _get_student_input_no_auth(self, email=None):
+       if email is None:
+           return self._get_student_input()
+       else:
+           return {
+               'user_id': None,
+               'user_email': email,
+           }
 
     def _past_due(self):
         """

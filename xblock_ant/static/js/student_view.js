@@ -55,6 +55,7 @@ function AntXBlockShow(runtime, element)
              * Start lab handler.
              */
             $(element).find('.ant-start-lab').on('click', function(e) {
+                $('.xblock-ant-success').removeClass('hidden');
                 var lab_window_settings = [
                     'height=600',
                     'width=800',

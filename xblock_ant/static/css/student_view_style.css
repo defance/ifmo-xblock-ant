@@ -19,3 +19,14 @@
 	text-align: center;
 	font-weight: 700;
 }
+
+div.xblock-ant-success {
+  background: #dff0d8;
+  border: 1px solid #468847;
+  border-radius: 4px;
+  padding: 15px;
+}
+
+.hidden {
+  display: none;
+}

@@ -7,9 +7,9 @@
         <%
             if (score.max != 0) {
                 if (score.earned != 0  || attempts.used > 0) {
-                    points_str = '(' + score.earned + '/' + score.max + ' points)'
+                    points_str = '(' + score.earned + '/' + score.max + ' баллов)'
                 } else {
-                    points_str = '(' + score.max + ' points possible)'
+                    points_str = '(' + score.max + ' возможный балл)'
                 }
             }
         %>
@@ -17,14 +17,13 @@
 
         <div><%= meta.text %></div>
 
-        <% if (ant_status == 'RUNNING') { %>
-            <div style="background-color: darkorange;">Lab is now running.</div>
-        <% } %>
+        <% var hidden = ' hidden'; if (ant_status == 'RUNNING') { hidden = '' } %>
+        <div class="xblock-ant-success<%= hidden %>">Lab is now running.</div>
 
         <div class="action">
             {% if not past_due %}
-            <input type="button" class="ant-start-lab" value="Start" />
-            <input type="button" class="ant-check-lab" value="Check" />
+            <input type="button" class="ant-start-lab" value="Выполнить" />
+            <input type="button" class="ant-check-lab" value="Проверить" title="Нажмите, если Ваш рейтинг не обновился после прохождения задания"/>
             {% else %}
             <div>
                 <div class="submission_feedback">Время, отведённое на выполнение лабораторной работы, истекло</div>
