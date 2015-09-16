@@ -381,13 +381,13 @@ class AntXBlock(AntXBlockFields, XBlock):
         }
 
     def _get_student_input_no_auth(self, email=None):
-       if email is None:
-           return self._get_student_input()
-       else:
-           return {
-               'user_id': None,
-               'user_email': email,
-           }
+        if email is None:
+            return self._get_student_input()
+        else:
+            return {
+                'user_id': None,
+                'user_email': email,
+            }
 
     def _past_due(self):
         """
