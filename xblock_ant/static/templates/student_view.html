@@ -44,10 +44,8 @@
     {% if is_staff %}
         {% if not is_studio %}
             <div class="wrap-instructor-info">
-            	<a class="instructor-info-action" href="#{{id}}-tasks-modal" id="{{id}}-show-tasks-button">Show tasks</a>
-            </div>
-            <div class="wrap-instructor-info">
                 <a class="instructor-info-action" href="#{{id}}-debug-modal" id="{{id}}-debug-button">Show debug info</a>
+            	<a class="instructor-info-action" href="#{{id}}-tasks-modal" id="{{id}}-show-tasks-button">Show tasks</a>
             </div>
         {% endif %}
     {% endif %}
@@ -58,6 +56,9 @@
                 <div class="inner-wrapper" style="color: black">
                     <header><h2>State</h2></header>
                     <div>&nbsp;</div>
+                    <p>
+                        <b>External url:</b> <textarea class="instructor-info-external-check" cols="70" rows="3">N/A</textarea>
+                    </p>
                     <div>
                         <label for="{{id}}-staff-user-input">User sso id: </label>
                         <input type="text" id="{{id}}-staff-user-input" name="user">

@@ -11,7 +11,8 @@ function AntXBlockShow(runtime, element)
         var urls = {
             start: runtime.handlerUrl(element, 'start_lab'),
             check: runtime.handlerUrl(element, 'check_lab'),
-            get_state: runtime.handlerUrl(element, 'get_user_data')
+            get_state: runtime.handlerUrl(element, 'get_user_data'),
+            check_no_auth: runtime.handlerUrl(element, 'check_lab_external').replace('/handler/', '/handler_noauth/')
         };
 
         var get_template = function(tmpl){
@@ -45,6 +46,7 @@ function AntXBlockShow(runtime, element)
             var is_staff = block.attr("data-is-staff") == "True";
             if (is_staff) {
                 $(element).find('.instructor-info-action').leanModal();
+                $(element).find('.instructor-info-external-check').text(urls.check_no_auth);
             }
 
             var data = JSON.parse(state);
