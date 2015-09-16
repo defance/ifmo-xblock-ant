@@ -196,7 +196,7 @@ class AntXBlock(AntXBlockFields, XBlock):
                 "message": "Время, отведённое на лабораторную работу, истекло.",
             })
 
-        student_input = self._get_student_input() if data.get('email') is not None else self._get_student_input_no_auth()
+        student_input = self._get_student_input() if data.get('username') is not None else self._get_student_input_no_auth()
         task = reserve_task(self,
                             grader_payload=self._get_grader_payload(),
                             system_payload=self._get_system_payload(),
