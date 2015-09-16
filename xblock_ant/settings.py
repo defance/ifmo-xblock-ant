@@ -12,7 +12,7 @@ ATTEMPTS_URL = 'http://de.ifmo.ru/api/public/courseAttempts?userlogin=%(user_ema
 
 # Адрес лабораторной работы по курсу и модулю (юниту)
 # LAB_URL = "http://de.ifmo.ru/IfmoSSO?redirect=http://de.ifmo.ru/servlet/%%3FRule=EXTERNALLOGON%%26COMMANDNAME=getCourseUnit%%26DATA=UNIT_ID=%(unit_id)s|COURSE_ID=%(course_id)s"
-LAB_URL = "http://community.npoed.ru/oauth/authorize.php?response_type=code&client_id=1930ca015234cfc686e2f085a30787dca47294113e1a8e3bbfb5686689e35d29&redirect_uri=https://de.ifmo.ru/api/public/npoedOAuthEnter&state=COMMANDNAME=getCourseUnit%%26DATA=UNIT_ID=%(unit_id)s%%7CCOURSE_ID=%(course_id)s"
+LAB_URL = "http://sso.openedu.ru/oauth2/authorize?response_type=code&client_id=abd6dc4ae52fee8f1226&redirect_uri=https://de.ifmo.ru/api/public/npoedOAuthEnter&state=COMMANDNAME=getCourseUnit%%26DATA=UNIT_ID=%(unit_id)s%%7CCOURSE_ID=%(course_id)s"
 
 # Адрес регистрации пользователя на курс внутри СУО
 REGISTER_URL = 'http://de.ifmo.ru/api/public/getCourseAccess?pid=%(sso_id)s&courseid=%(course_id)s'
