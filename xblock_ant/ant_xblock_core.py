@@ -6,7 +6,7 @@ from celery.states import PENDING
 from courseware.models import StudentModule
 from xblock.core import XBlock
 from xblock.fragment import Fragment
-from webob.exc import HTTPFound, HTTPForbidden
+from webob.exc import HTTPFound, HTTPForbidden, HTTPOk
 from django.db import transaction
 from xmodule.util.duedate import get_extended_due_date
 
@@ -171,11 +171,11 @@ class AntXBlock(AntXBlockFields, XBlock):
 
     @XBlock.handler
     def check_lab_external(self, request, suffix=''):
-        self._check_lab(request.GET)
+        return HTTPOk(body_template=self._check_lab(request.GET))
 
     @XBlock.json_handler
     def check_lab(self, data, suffix=''):
-        self._check_lab(data)
+        return self._check_lab(data)
 
     def _check_lab(self, data):
         """
@@ -404,3 +404,4 @@ class AntXBlock(AntXBlockFields, XBlock):
         Get current date and time.
         """
         return datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
+

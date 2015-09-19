@@ -28,3 +28,7 @@ def resource_string(path, package_name=__name__):
     data = pkg_resources.resource_string(package_name, path)
     return data
     # return data.decode("utf8")
+
+
+def get_email_login(email):
+    return email.split('@')[0].split('+')[0].replace('.', '')

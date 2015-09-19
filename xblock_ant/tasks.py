@@ -5,6 +5,8 @@ from ifmo_celery_grader.tasks.helpers import GraderTaskBase, submit_task_grade, 
 import json
 import requests
 
+from .utils import get_email_login
+
 
 class DelayedAntGraderTask(GraderTaskBase):
     """
@@ -43,7 +45,8 @@ class DelayedAntGraderTask(GraderTaskBase):
             'user_id': student_input.get('user_id'),
             'user_email': student_input.get('user_email'),
             'course_id': grader_payload.get('ant_course_id'),
-            'unit_id': grader_payload.get('ant_unit_id')
+            'unit_id': grader_payload.get('ant_unit_id'),
+            'user_email_login': get_email_login(student_input.get('user_email')),
         })
 
         # Получаем последнюю попытку, если таковая имело место
@@ -90,7 +93,8 @@ class AntCheckTask(GraderTaskBase):
             'user_id': student_input.get('user_id'),
             'user_email': student_input.get('user_email'),
             'course_id': grader_payload.get('ant_course_id'),
-            'unit_id': grader_payload.get('ant_unit_id')
+            'unit_id': grader_payload.get('ant_unit_id'),
+            'user_email_login': get_email_login(student_input.get('user_email')),
         })
         return json.loads(result.text)
 
