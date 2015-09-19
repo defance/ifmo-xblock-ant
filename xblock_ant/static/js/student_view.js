@@ -72,7 +72,7 @@ function AntXBlockShow(runtime, element)
 
             $(element).find('.ant-check-lab').on('click', function(e) {
                 $(element).find('input').addClass('disabled');
-                $.ajax({ url: urls.check, type: "POST", data: '{}', success: function(data){ console.log(data); }});
+                $.ajax({ url: urls.check, type: "POST", data: '{}', success: function(data){}});
                 $(this).val($(this).data('checking'));
                 setTimeout($.proxy(function(){
                     $.ajax({ url: urls.get_current_state, type: "POST", data: '{}', success: function(data){
