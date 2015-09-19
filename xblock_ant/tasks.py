@@ -53,8 +53,10 @@ class DelayedAntGraderTask(GraderTaskBase):
         attempts_data = json.loads(result.text)
         latest_attempt = attempts_data['attempts'][-1] if len(attempts_data['attempts']) > 0 else None
 
-        # Если последняя попытка была, и она ещё не закончена
-        if latest_attempt is not None and latest_attempt.get('end') is None:
+        # Если последняя попытка была, и она ещё не закончена (учитывая, что
+        # лимит на лабораторную положителен)
+        if latest_attempt is not None and latest_attempt.get('end') is None \
+                and grader_payload.get('ant_time_limit', 0) > 0:
 
             # Установим статус модуля в "Выполнение"
             state['ant_result'] = json.dumps(response)
@@ -138,7 +140,9 @@ class AntCheckTask(GraderTaskBase):
         # плановую проверку. Через интервал равный веремени, отведённому на
         # лабораторную, вытянем баллы из СУО ещё раз, со всеми теми же
         # параметрами.
-        if state['ant_status'] == 'RUNNING':
+        # Дополнительно проверим таймаут для проверки, чтобы не ставить
+        # проверку моментально.
+        if state['ant_status'] == 'RUNNING' and grader_payload.get('ant_time_limit', 0) > 0:
             new_task = reserve_task(None, save=True,
                                     grader_payload=grader_payload,
                                     system_payload=system_payload,
