@@ -12,6 +12,7 @@ function AntXBlockShow(runtime, element)
             start: runtime.handlerUrl(element, 'start_lab'),
             check: runtime.handlerUrl(element, 'check_lab'),
             get_state: runtime.handlerUrl(element, 'get_user_data'),
+            get_current_state: runtime.handlerUrl(element, 'get_current_user_data'),
             check_no_auth: runtime.handlerUrl(element, 'check_lab_external').replace('/handler/', '/handler_noauth/')
         };
 
@@ -36,22 +37,10 @@ function AntXBlockShow(runtime, element)
 
         function render(data) {
             $(element).find('.ant-content').html(template.main(data));
+            render_bind();
         }
 
-        $(function($) { // onLoad
-
-            var block = $(element).find(".ant-block");
-            var state = block.attr("data-student-state");
-
-            var is_staff = block.attr("data-is-staff") == "True";
-            if (is_staff) {
-                $(element).find('.instructor-info-action').leanModal();
-                $(element).find('.instructor-info-external-check').text(urls.check_no_auth);
-            }
-
-            var data = JSON.parse(state);
-            data.urls = urls;
-            render(data);
+        function render_bind() {
 
             /*
              * Start lab handler.
@@ -82,7 +71,14 @@ function AntXBlockShow(runtime, element)
             });
 
             $(element).find('.ant-check-lab').on('click', function(e) {
+                $(element).find('input').addClass('disabled');
                 $.ajax({ url: urls.check, type: "POST", data: '{}', success: function(data){ console.log(data); }});
+                $(this).val($(this).data('checking'));
+                setTimeout($.proxy(function(){
+                    $.ajax({ url: urls.get_current_state, type: "POST", data: '{}', success: function(data){
+                        render(JSON.parse(data.student_state));
+                    }});
+                }, this), 3000);
             });
 
             $(element).find('.staff-get-state-btn').on('click', function(e) {
@@ -106,6 +102,22 @@ function AntXBlockShow(runtime, element)
                     $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>')
                 }});
             });
+        }
+
+        $(function($) { // onLoad
+
+            var block = $(element).find(".ant-block");
+            var state = block.attr("data-student-state");
+
+            var is_staff = block.attr("data-is-staff") == "True";
+            if (is_staff) {
+                $(element).find('.instructor-info-action').leanModal();
+                $(element).find('.instructor-info-external-check').text(urls.check_no_auth);
+            }
+
+            var data = JSON.parse(state);
+            data.urls = urls;
+            render(data);
 
         });
 

@@ -167,8 +167,8 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         # Особенность ANT: пользователя нужно зарегистрировать на курс, прежде
         # чем показывать ему лабораторную
-        register_url = REGISTER_URL % lab_meta
-        requests.post(register_url)
+        # register_url = REGISTER_URL % lab_meta
+        # requests.post(register_url)
 
         # Делаем редирект на страницу с лабораторной
         lab_url = self.lab_url % lab_meta
@@ -265,6 +265,10 @@ class AntXBlock(AntXBlockFields, XBlock):
         """
         self.save()
 
+    @XBlock.json_handler
+    def get_current_user_data(self, data, suffix=''):
+        return self._get_student_context()
+
     def _get_student_context(self):
         grader_tasks = GraderTask.objects.filter(module_id = self.location)
         tasks = []
@@ -308,7 +312,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
             # This is probably studio, find out some more ways to determine this
             'is_studio': self.scope_ids.user_id is None,
-            'tasks':tasks
+            # 'tasks':tasks
         }
 
     @staticmethod
