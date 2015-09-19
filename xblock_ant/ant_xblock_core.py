@@ -6,7 +6,7 @@ from celery.states import PENDING
 from courseware.models import StudentModule
 from xblock.core import XBlock
 from xblock.fragment import Fragment
-from webob.exc import HTTPFound, HTTPForbidden, HTTPOk
+from webob.exc import HTTPFound, HTTPForbidden, HTTPOk, HTTPInternalServerError
 from django.db import transaction
 from xmodule.util.duedate import get_extended_due_date
 
@@ -100,9 +100,14 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
 
+        # Проверим лабораторную на ошибки конфигурации
+        has_errors, data_obj = self._validate_lab_config()
+        if has_errors:
+            return HTTPInternalServerError(json=data_obj)
+
         # Начинаем лабораторную только в том случае, если срок не истёк
         if self._past_due():
-            return HTTPForbidden(comment="Past due")
+            return HTTPForbidden(json={"result": "error", "message": "Past due"})
 
         # Собираем мета-данные для блока
         lab_meta = {
@@ -171,7 +176,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
     @XBlock.handler
     def check_lab_external(self, request, suffix=''):
-        return HTTPOk(body_template=self._check_lab(request.GET))
+        return HTTPOk(json=self._check_lab(request.GET))
 
     @XBlock.json_handler
     def check_lab(self, data, suffix=''):
@@ -189,12 +194,17 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
 
+        # Если в конфигурации лабораторной ошибки -- вообще ничего не делаем
+        has_errors, data_obj = self._validate_lab_config()
+        if has_errors:
+            return data_obj
+
         # Проверяем лабораторную только в том случае, если срок не истёк
         if self._past_due():
-            return json.dumps({
+            return {
                 "result": "error",
                 "message": "Время, отведённое на лабораторную работу, истекло.",
-            })
+            }
 
         student_input = self._get_student_input() if data.get('username') is not None else self._get_student_input_no_auth()
         task = reserve_task(self,
@@ -204,10 +214,10 @@ class AntXBlock(AntXBlockFields, XBlock):
                             save=True,
                             task_type='ANT_CHECK')
         submit_ant_check(task, countdown=0)
-        return json.dumps({
+        return {
             "result": "success",
             "message": "Лабораторная работа поставлена в очередь на проверку.",
-        })
+        }
 
     @XBlock.json_handler
     def save_settings(self, data, suffix=''):
@@ -405,3 +415,18 @@ class AntXBlock(AntXBlockFields, XBlock):
         """
         return datetime.datetime.utcnow().replace(tzinfo=pytz.utc)
 
+    def _validate_lab_config(self):
+        """
+        Проверка лабораторной на ошибки.
+
+        Сейчас проверяет только наличие unit_id и course_id.
+
+        :return: (has_errors, data_obj) -- признак ошибки и объект с данными, чтобы вернуть в HTTPResponse
+        """
+        has_errors = any(map(lambda x: x in [0, None, ''], [self.ant_unit_id, self.ant_course_id, ]))
+        data_obj = {
+            'result': 'ok' if not has_errors else 'error',
+        }
+        if has_errors:
+            data_obj['message'] = 'Improperly configured'
+        return has_errors, data_obj
