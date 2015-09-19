@@ -309,6 +309,8 @@ class AntXBlock(AntXBlockFields, XBlock):
             ),
             'is_staff': getattr(self.xmodule_runtime, 'user_is_staff', False),
             'past_due': self._past_due(),
+            'attempts_limit': self.attempts > self.ant_attempts_limit or
+                              self.attempts == self.ant_attempts_limit and self.ant_status == 'RUNNING',
 
             # This is probably studio, find out some more ways to determine this
             'is_studio': self.scope_ids.user_id is None,

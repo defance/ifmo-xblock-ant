@@ -18,12 +18,16 @@
         <div><%= meta.text %></div>
 
         <% var hidden = ' hidden'; if (ant_status == 'RUNNING') { hidden = '' } %>
-        <div class="xblock-ant-success<%= hidden %>">Lab is now running.</div>
+        <div class="xblock-ant-success<%= hidden %>">Идёт выполнение лабораторной работы.</div>
 
         <div class="action">
             {% if not past_due %}
-            <input type="button" class="ant-start-lab" value="Выполнить" />
-            <input type="button" class="ant-check-lab" value="Проверить" title="Нажмите, если Ваш рейтинг не обновился после прохождения задания" data-checking="Проверка..."/>
+                {% if  not attempts_limit %}
+                <input type="button" class="ant-start-lab" value="Выполнить" />
+                <input type="button" class="ant-check-lab" value="Проверить" title="Нажмите, если Ваш рейтинг не обновился после прохождения задания" data-checking="Проверка..."/>
+                {% else %}
+                    <!--<div class="submission_feedback">Израсходовано отведённое количество попыток</div>-->
+                {% endif %}
             {% else %}
             <div>
                 <div class="submission_feedback">Время, отведённое на выполнение лабораторной работы, истекло</div>
@@ -31,7 +35,7 @@
             {% endif %}
             <% if (attempts.limit > 0) { %>
                 <div class="submission_feedback">
-                    You have used <%= attempts.used %> of <%= attempts.limit %> submissions
+                    Вы использовали <%= attempts.used %> попыток из <%= attempts.limit %>
                 </div>
             <% } %>
         </div>
@@ -44,8 +48,8 @@
     {% if is_staff %}
         {% if not is_studio %}
             <div class="wrap-instructor-info">
-                <a class="instructor-info-action" href="#{{id}}-debug-modal" id="{{id}}-debug-button">Show debug info</a>
-            	<a class="instructor-info-action" href="#{{id}}-tasks-modal" id="{{id}}-show-tasks-button">Show tasks</a>
+                <a class="instructor-info-action" href="#{{id}}-debug-modal" id="{{id}}-debug-button">Отладочная информация</a>
+            	<a class="instructor-info-action" href="#{{id}}-tasks-modal" id="{{id}}-show-tasks-button">Очередь заданий</a>
             </div>
         {% endif %}
     {% endif %}
@@ -54,19 +58,19 @@
         {% if not is_studio %}
             <section aria-hidden="true" class="modal staff-modal" id="{{id}}-debug-modal" style="width: 800px">
                 <div class="inner-wrapper" style="color: black">
-                    <header><h2>State</h2></header>
+                    <header><h2>Состояние пользователя</h2></header>
                     <div>&nbsp;</div>
                     <p>
-                        <b>External url:</b> <textarea class="instructor-info-external-check" cols="70" rows="3">N/A</textarea>
+                        <b>URL для запроса проверки:</b> <textarea class="instructor-info-external-check" cols="70" rows="3">N/A</textarea>
                     </p>
                     <div>
-                        <label for="{{id}}-staff-user-input">User sso id: </label>
+                        <label for="{{id}}-staff-user-input">Имя пользователя: </label>
                         <input type="text" id="{{id}}-staff-user-input" name="user">
-                        <button value="" class="button staff-get-state-btn" id="{{id}}-staff-get-state-button">Get state</button>
+                        <button value="" class="button staff-get-state-btn" id="{{id}}-staff-get-state-button">Получить</button>
                     </div>
                     <hr/>
                     <div id="{{id}}-staff-info">
-                        <p>Your current state is below. State for specific student comes here soon. Whenever.</p>
+                        <p>Здесь отображается состояние пользователя</p>
                         <div class="staff-info-container" style="max-height: 600px; overflow-y: scroll;">
                             <pre>{{state}}</pre>
                         </div>
@@ -80,7 +84,7 @@
         {% if not is_studio %}
             <section aria-hidden="true" class="modal staff-modal" id="{{id}}-tasks-modal" style="width: 800px">
                 <div class="inner-wrapper" style="color: black">
-                    <header><h2>Grader tasks</h2></header>
+                    <header><h2>Очередь заданий</h2></header>
                     <div>&nbsp;</div>
                     <div id="tasks-table">
                         <table><tbody>
