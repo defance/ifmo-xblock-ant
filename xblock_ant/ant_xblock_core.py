@@ -250,11 +250,17 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
         user_id = data.get('user_id')
-        module = StudentModule.objects.get(module_state_key=self.location,
-                                           student__username=user_id)
-        return {
-            'state': module.state,
-        }
+        try:
+            module = StudentModule.objects.get(module_state_key=self.location,
+                                               student__username=user_id)
+            return {
+                'state': module.state,
+            }
+        except StudentModule.DoesNotExist:
+            return {
+                'state': "Указанный пользователь не существует."
+            }
+
 
     @transaction.autocommit
     def save_now(self):
