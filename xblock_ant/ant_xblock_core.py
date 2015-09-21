@@ -179,6 +179,11 @@ class AntXBlock(AntXBlockFields, XBlock):
         return HTTPOk(json=self._check_lab(request.GET))
 
     @XBlock.json_handler
+    def get_course_info(self, data, suffix=''):
+        t = requests.get('http://de.ifmo.ru/api/public/courseInfo?courseid='+data.get('course_id')+'&unitid='+data.get('unit_id'))
+        return t.text
+
+    @XBlock.json_handler
     def check_lab(self, data, suffix=''):
         return self._check_lab(data)
 
