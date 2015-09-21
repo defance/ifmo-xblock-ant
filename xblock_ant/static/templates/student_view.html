@@ -85,26 +85,9 @@
             <section aria-hidden="true" class="modal staff-modal" id="{{id}}-tasks-modal" style="width: 800px">
                 <div class="inner-wrapper" style="color: black">
                     <header><h2>Очередь заданий</h2></header>
-                    <div>&nbsp;</div>
-                    <div id="tasks-table">
-                        <table><tbody>
-			    <caption>Module id: {{ tasks.0.module_id }}</caption>
-                            <tr>
-                               <th>Task id</th>
-                               <th>User target</th>
-                               <th>Task type</th>
-                               <th>Task state</th>
-                            </tr>
-                            {% for task in tasks %}
-                            <tr>
-                               <td>{{ task.task_id }}</td>
-                               <td>{{ task.user_target }}</td>
-                               <td>{{ task.task_type }}</td>
-                               <td>{{ task.task_state }}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody></table>
-                    </div>
+                    <p>
+                        <b>URL для запроса проверки:</b> <textarea class="instructor-info-tasks-data" cols="70" rows="3">N/A</textarea>
+                    </p>
                 </div>
             </section>
         {% endif %}

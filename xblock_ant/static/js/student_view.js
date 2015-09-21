@@ -13,7 +13,8 @@ function AntXBlockShow(runtime, element)
             check: runtime.handlerUrl(element, 'check_lab'),
             get_state: runtime.handlerUrl(element, 'get_user_data'),
             get_current_state: runtime.handlerUrl(element, 'get_current_user_data'),
-            check_no_auth: runtime.handlerUrl(element, 'check_lab_external').replace('/handler/', '/handler_noauth/')
+            check_no_auth: runtime.handlerUrl(element, 'check_lab_external').replace('/handler/', '/handler_noauth/'),
+            get_tasks_data: runtime.handlerUrl(element, 'get_tasks_data')
         };
 
         var get_template = function(tmpl){
@@ -113,6 +114,7 @@ function AntXBlockShow(runtime, element)
             if (is_staff) {
                 $(element).find('.instructor-info-action').leanModal();
                 $(element).find('.instructor-info-external-check').text(urls.check_no_auth);
+                $(element).find('.instructor-info-tasks-data').text(urls.get_tasks_data);
             }
 
             var data = JSON.parse(state);

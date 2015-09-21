@@ -275,15 +275,29 @@ class AntXBlock(AntXBlockFields, XBlock):
     def get_current_user_data(self, data, suffix=''):
         return self._get_student_context()
 
-    def _get_student_context(self):
-        grader_tasks = GraderTask.objects.filter(module_id = self.location)
-        tasks = []
+    @XBlock.handler
+    def get_tasks_data(self, data, suffix=''):
+        grader_tasks = GraderTask.objects.filter(module_id=self.location)
+        tasks = [['id', 'task_id', 'student_input', 'grader_payload', 'system_payload', 'task_input', 'task_output',
+                  'course_id', 'module_id', 'user_target.username', 'task_type', 'task_state']]
         for task in grader_tasks:
-          tasks.append({'task_id':task.task_id,
-                        'module_id':task.module_id,
-                        'user_target':task.user_target,
-                        'task_type':task.task_type,
-                        'task_state':task.task_state})
+            tasks.append([
+                task.id,
+                task.task_id,
+                task.student_input,
+                task.grader_payload,
+                task.system_payload,
+                task.task_input,
+                task.task_output,
+                task.course_id,
+                task.module_id,
+                task.user_target.username,
+                task.task_type,
+                task.task_state,
+            ])
+        return HTTPOk(body="\n".join(["\t".join(["" if j is None else j for j in i]) for i in tasks]))
+
+    def _get_student_context(self):
         """
         Получить контекст текущего пользователя для отображения шаблона.
         :return:
