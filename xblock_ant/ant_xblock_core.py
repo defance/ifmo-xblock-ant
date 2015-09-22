@@ -111,7 +111,9 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         # Собираем мета-данные для блока
         lab_meta = {
-            'sso_id': self.runtime.get_real_user(self.runtime.anonymous_student_id).username,
+            'user_id': self.runtime.get_real_user(self.runtime.anonymous_student_id).id,
+            'user_login': self.runtime.get_real_user(self.runtime.anonymous_student_id).username,
+            'user_email': self.runtime.get_real_user(self.runtime.anonymous_student_id).email,
             'course_id': self.ant_course_id,
             'unit_id': self.ant_unit_id,
         }
@@ -417,7 +419,8 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
         return {
-            'user_id': self.runtime.get_real_user(self.runtime.anonymous_student_id).username,
+            'user_id': self.runtime.get_real_user(self.runtime.anonymous_student_id).id,
+            'user_login': self.runtime.get_real_user(self.runtime.anonymous_student_id).username,
             'user_email': self.runtime.get_real_user(self.runtime.anonymous_student_id).email,
         }
 
@@ -427,6 +430,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         else:
             return {
                 'user_id': None,
+                'user_login': None,
                 'user_email': email,
             }
 

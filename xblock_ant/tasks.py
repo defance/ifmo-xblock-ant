@@ -44,6 +44,7 @@ class DelayedAntGraderTask(GraderTaskBase):
         result = requests.get(grader_payload.get('attempts_url') % {
             'user_id': student_input.get('user_id'),
             'user_email': student_input.get('user_email'),
+            'user_login': student_input.get('user_login'),
             'course_id': grader_payload.get('ant_course_id'),
             'unit_id': grader_payload.get('ant_unit_id'),
             'user_email_login': get_email_login(student_input.get('user_email')),
@@ -94,6 +95,7 @@ class AntCheckTask(GraderTaskBase):
         result = requests.get(grader_payload.get('attempts_url') % {
             'user_id': student_input.get('user_id'),
             'user_email': student_input.get('user_email'),
+            'user_login': student_input.get('user_login'),
             'course_id': grader_payload.get('ant_course_id'),
             'unit_id': grader_payload.get('ant_unit_id'),
             'user_email_login': get_email_login(student_input.get('user_email')),

@@ -66,7 +66,7 @@
                         <label class="label setting-label">Lab URL</label>
                         <input class="input setting-input" type="text" name="lab_url" value="<%= lab_url %>" />
                     </div>
-                    <span class="tip setting-help">API lab url</span>
+                    <span class="tip setting-help">API lab url. Available keys: <i>%(user_id)s, %(user_login)s, %(user_email)s, %(course_id)s, %(unit_id)s</i></span>
                 </li>
 
                 <li class="field comp-setting-entry">
@@ -74,7 +74,7 @@
                         <label class="label setting-label">Attempts URL</label>
                         <input class="input setting-input" type="text" name="attempts_url" value="<%= attempts_url %>" />
                     </div>
-                    <span class="tip setting-help">API url for getting attempts</span>
+                    <span class="tip setting-help">API url for getting attempts. Available keys: <i>%(user_id)s, %(user_login)s, %(user_email)s, %(course_id)s, %(unit_id)s</i></span>
                 </li>
 
             </ul>
