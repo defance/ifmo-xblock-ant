@@ -302,7 +302,7 @@ class AntXBlock(AntXBlockFields, XBlock):
                 task.task_type,
                 task.task_state,
             ])
-        return HTTPOk(body="\n".join(["\t".join(["" if j is None else j for j in i]) for i in tasks]))
+        return HTTPOk(body="\n".join(["\t".join(["" if j is None else str(j) for j in i]) for i in tasks]))
 
     def _get_student_context(self):
         """
