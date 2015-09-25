@@ -348,7 +348,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
             # URL-ы для внешней работы с блоком, вынесены сюда, поскольку
             # js-runtime не генерируют схему, а этот -- да.
-            'check_no_auth': self.runtime.handler_url(self, 'check_no_auth', thirdparty=True),
+            'check_no_auth': self.runtime.handler_url(self, 'check_lab_external', thirdparty=True),
             'get_tasks_data': self.runtime.handler_url(self, 'get_tasks_data'),
         }
 
