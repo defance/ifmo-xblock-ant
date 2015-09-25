@@ -77,7 +77,8 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
         return {
-            'score': 0,
+            'score': round(self.score, 2),
+            'total': self.weight,
         }
 
     def max_score(self):
@@ -86,7 +87,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         :return:
         """
-        return self.points
+        return self.weight
 
     @XBlock.handler
     def start_lab(self, request, suffix=''):
