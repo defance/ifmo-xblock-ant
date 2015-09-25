@@ -345,6 +345,11 @@ class AntXBlock(AntXBlockFields, XBlock):
             # This is probably studio, find out some more ways to determine this
             'is_studio': self.scope_ids.user_id is None,
             # 'tasks':tasks
+
+            # URL-ы для внешней работы с блоком, вынесены сюда, поскольку
+            # js-runtime не генерируют схему, а этот -- да.
+            'check_no_auth': self.runtime.handler_url(self, 'check_no_auth', thirdparty=True),
+            'get_tasks_data': self.runtime.handler_url(self, 'get_tasks_data'),
         }
 
     @staticmethod

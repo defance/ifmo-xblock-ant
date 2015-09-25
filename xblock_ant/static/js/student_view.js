@@ -13,7 +13,7 @@ function AntXBlockShow(runtime, element)
             check: runtime.handlerUrl(element, 'check_lab'),
             get_state: runtime.handlerUrl(element, 'get_user_data'),
             get_current_state: runtime.handlerUrl(element, 'get_current_user_data'),
-            check_no_auth: runtime.handlerUrl(element, 'check_lab_external').replace('/handler/', '/handler_noauth/'),
+            check_no_auth: runtime.handlerUrl(element, 'check_lab_external', '', '', true),
             get_tasks_data: runtime.handlerUrl(element, 'get_tasks_data')
         };
 
@@ -37,6 +37,8 @@ function AntXBlockShow(runtime, element)
         }
 
         function render(data) {
+            this.url.check_no_auth = data.check_no_auth;
+            this.url.get_tasks_data = data.get_tasks_data;
             $(element).find('.ant-content').html(template.main(data));
             render_bind();
         }
