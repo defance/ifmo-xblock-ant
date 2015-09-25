@@ -37,8 +37,6 @@ function AntXBlockShow(runtime, element)
         }
 
         function render(data) {
-            this.url.check_no_auth = data.check_no_auth;
-            this.url.get_tasks_data = data.get_tasks_data;
             $(element).find('.ant-content').html(template.main(data));
             render_bind();
         }
@@ -115,8 +113,8 @@ function AntXBlockShow(runtime, element)
             var is_staff = block.attr("data-is-staff") == "True";
             if (is_staff) {
                 $(element).find('.instructor-info-action').leanModal();
-                $(element).find('.instructor-info-external-check').text(urls.check_no_auth);
-                $(element).find('.instructor-info-tasks-data').text(urls.get_tasks_data);
+                $(element).find('.instructor-info-external-check').text(block.data('url-check-no-auth'));
+                $(element).find('.instructor-info-tasks-data').text(block.data('url-tasks-data'));
             }
 
             var data = JSON.parse(state);
