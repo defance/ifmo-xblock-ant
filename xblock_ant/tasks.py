@@ -36,7 +36,6 @@ class DelayedAntGraderTask(GraderTaskBase):
 
         TODO: Защитить от флуда
         """
-
         module = system.get('module')
         state = json.loads(module.state)
 
@@ -56,12 +55,11 @@ class DelayedAntGraderTask(GraderTaskBase):
 
         # Если последняя попытка была, и она ещё не закончена (учитывая, что
         # лимит на лабораторную положителен)
-        if latest_attempt is not None and latest_attempt.get('end') is None \
-                and grader_payload.get('ant_time_limit', 0) > 0:
+        if latest_attempt is not None and latest_attempt.get('end') is None and grader_payload.get('ant_time_limit', 0) > 0:
 
             # Установим статус модуля в "Выполнение"
-            state['ant_result'] = json.dumps(response)
-            state['attempts'] = len(response['attempts'])
+            state['ant_result'] = result.text
+            state['attempts'] = len(attempts_data['attempts'])
             state['ant_status'] = 'RUNNING'
 
             # Поставим в очередь задачу по проверке баллов
