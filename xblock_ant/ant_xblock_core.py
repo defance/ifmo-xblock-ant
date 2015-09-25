@@ -60,6 +60,7 @@ class AntXBlock(AntXBlockFields, XBlock):
                 'attempts_limit': self.ant_attempts_limit,
                 'attempts_url': self.attempts_url,
                 'lab_url': self.lab_url,
+                'weight': self.weight,
             }),
         }
 
