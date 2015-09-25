@@ -236,6 +236,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
         self.display_name = data.get('display_name')
+        self.weight = data.get('weight')
         self.ant_course_id = data.get('course_id', '')
         self.ant_unit_id = data.get('unit_id', '')
         self.content = data.get('content', '')
