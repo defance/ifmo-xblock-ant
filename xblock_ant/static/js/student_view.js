@@ -12,6 +12,7 @@ function AntXBlockShow(runtime, element)
             start: runtime.handlerUrl(element, 'start_lab'),
             check: runtime.handlerUrl(element, 'check_lab'),
             get_state: runtime.handlerUrl(element, 'get_user_data'),
+            reset_state: runtime.handlerUrl(element, 'reset_user_data'),
             get_current_state: runtime.handlerUrl(element, 'get_current_user_data'),
             check_no_auth: runtime.handlerUrl(element, 'check_lab_external', '', '', true),
             get_tasks_data: runtime.handlerUrl(element, 'get_tasks_data')
@@ -87,6 +88,30 @@ function AntXBlockShow(runtime, element)
                     'user_id': $(element).find('input[name="user"]').val()
                 };
                 $.ajax({ url: urls.get_state, type: "POST", data: JSON.stringify(data), success: function(data){
+                    var deplainify = function(obj) {
+                        for (var key in obj) {
+                            try {
+                                if (obj.hasOwnProperty(key)) {
+                                    obj[key] = deplainify(JSON.parse(obj[key]));
+                                }
+                            } catch (e) {
+
+                            }
+                        }
+                        return obj;
+                    };
+                    var state = deplainify(data);
+                    $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>')
+                }});
+            });
+            $(element).find('.staff-reset-state-btn').on('click', function(e) {
+                if (!confirm('Do you really want to reset state?')) {
+                    return;
+                }
+                var data = {
+                    'user_id': $(element).find('input[name="user"]').val()
+                };
+                $.ajax({ url: urls.reset_state, type: "POST", data: JSON.stringify(data), success: function(data){
                     var deplainify = function(obj) {
                         for (var key in obj) {
                             try {

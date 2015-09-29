@@ -251,6 +251,24 @@ class AntXBlock(AntXBlockFields, XBlock):
         return '{}'
 
     @XBlock.json_handler
+    def reset_user_data(self, data, suffix=''):
+        user_id = data.get('user_id')
+        try:
+            module = StudentModule.objects.get(module_state_key=self.location,
+                                               student__username=user_id)
+            module.state = None
+            module.max_grade = None
+            module.grade = None
+            module.save()
+            return {
+                'state': "Состояние пользователя сброшено.",
+            }
+        except StudentModule.DoesNotExist:
+            return {
+                'state': "Указанный пользователь не существует."
+            }
+
+    @XBlock.json_handler
     def get_user_data(self, data, suffix=''):
         """
         Получить состояние определённого пользователя.
