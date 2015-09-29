@@ -17,6 +17,7 @@
 
         <div><%= meta.text %></div>
 
+    {% if not is_studio %}
         <% var hidden = ' hidden'; if (ant_status == 'RUNNING') { hidden = '' } %>
         <div class="xblock-ant-success<%= hidden %>">Идёт выполнение лабораторной работы.</div>
 
@@ -39,6 +40,9 @@
                 </div>
             <% } %>
         </div>
+    {% else %}
+        <p><b><i>Элементы управления недоступны при редактирования блока в Студии.</i></b></p>
+    {% endif %}
     </script>
 
     <div class="ant-content problem">

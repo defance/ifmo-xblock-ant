@@ -361,7 +361,7 @@ class AntXBlock(AntXBlockFields, XBlock):
                               self.attempts == self.ant_attempts_limit and self.ant_status != 'RUNNING',
 
             # This is probably studio, find out some more ways to determine this
-            'is_studio': self.scope_ids.user_id is None,
+            'is_studio': self.runtime.get_real_user is None,
             # 'tasks':tasks
 
             # URL-ы для внешней работы с блоком, вынесены сюда, поскольку
