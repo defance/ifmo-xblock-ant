@@ -184,6 +184,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
     @XBlock.json_handler
     def get_course_info(self, data, suffix=''):
+        assert self._is_staff()
         t = requests.get('http://de.ifmo.ru/api/public/courseInfo?courseid='+data.get('course_id')+'&unitid='+data.get('unit_id'))
         return t.text
 
@@ -237,6 +238,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         :param suffix:
         :return:
         """
+        assert self._is_staff()
         self.display_name = data.get('display_name')
         self.weight = data.get('weight')
         self.ant_course_id = data.get('course_id', '')
@@ -252,6 +254,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
     @XBlock.json_handler
     def reset_user_data(self, data, suffix=''):
+        assert self._is_staff()
         user_id = data.get('user_id')
         try:
             module = StudentModule.objects.get(module_state_key=self.location,
@@ -277,6 +280,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         :param suffix:
         :return:
         """
+        assert self._is_staff()
         user_id = data.get('user_id')
         try:
             module = StudentModule.objects.get(module_state_key=self.location,
@@ -305,6 +309,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
     @XBlock.handler
     def get_tasks_data(self, data, suffix=''):
+        assert self._is_staff()
         grader_tasks = GraderTask.objects.filter(module_id=self.location)
         tasks = [['id', 'task_id', 'student_input', 'grader_payload', 'system_payload', 'task_input', 'task_output',
                   'course_id', 'module_id', 'user_target.username', 'task_type', 'task_state']]
@@ -491,3 +496,6 @@ class AntXBlock(AntXBlockFields, XBlock):
         if has_errors:
             data_obj['message'] = 'Improperly configured'
         return has_errors, data_obj
+
+    def _is_staff(self):
+        return getattr(self.xmodule_runtime, 'user_is_staff', False)
