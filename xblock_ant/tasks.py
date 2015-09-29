@@ -120,7 +120,7 @@ class AntCheckTask(GraderTaskBase):
             print latest_attempt
             module.grade = latest_attempt.get('result', 0)
             if module.grade is not None:
-                state['score'] = module.grade / module.max_grade * grader_payload.get('max_score', 1)
+                state['score'] = module.grade / module.max_grade * system_payload.get('max_score', 1)
 
             state['ant_result'] = json.dumps(response)
             state['attempts'] = len(response['attempts'])
