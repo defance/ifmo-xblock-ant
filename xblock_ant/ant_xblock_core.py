@@ -8,6 +8,7 @@ from xblock.core import XBlock
 from xblock.fragment import Fragment
 from webob.exc import HTTPFound, HTTPForbidden, HTTPOk, HTTPInternalServerError
 from django.db import transaction
+from django.contrib.auth.models import User
 from xmodule.util.duedate import get_extended_due_date
 
 import datetime
@@ -216,7 +217,12 @@ class AntXBlock(AntXBlockFields, XBlock):
                 "message": "Время, отведённое на лабораторную работу, истекло.",
             }
 
-        student_input = self._get_student_input() if data.get('username') is not None else self._get_student_input_no_auth()
+        student_input = self._get_student_input() if data.get('username') is None else self._get_student_input_no_auth(username=data.get('username'))
+        if not student_input:
+            return {
+                "result": "error",
+                "message": "Не удалось определить пользователя, для которого провести проверку",
+            }
         task = reserve_task(self,
                             grader_payload=self._get_grader_payload(),
                             system_payload=self._get_system_payload(),
@@ -255,10 +261,10 @@ class AntXBlock(AntXBlockFields, XBlock):
     @XBlock.json_handler
     def reset_user_data(self, data, suffix=''):
         assert self._is_staff()
-        user_id = data.get('user_id')
+        user_login = data.get('user_login')
         try:
             module = StudentModule.objects.get(module_state_key=self.location,
-                                               student__username=user_id)
+                                               student__username=user_login)
             module.state = None
             module.max_grade = None
             module.grade = None
@@ -281,10 +287,10 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
         assert self._is_staff()
-        user_id = data.get('user_id')
+        user_login = data.get('user_login')
         try:
             module = StudentModule.objects.get(module_state_key=self.location,
-                                               student__username=user_id)
+                                               student__username=user_login)
             return {
                 'state': module.state,
             }
@@ -293,6 +299,10 @@ class AntXBlock(AntXBlockFields, XBlock):
                 'state': "Указанный пользователь не существует."
             }
 
+    @XBlock.json_handler
+    def update_user_data(self, data, suffix=''):
+       assert self._is_staff()
+       user_id = data.get('user_login')
 
     @transaction.autocommit
     def save_now(self):
@@ -449,21 +459,30 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         :return:
         """
+        print '**********************************************************************'
+        real_user = self.runtime.get_real_user(self.runtime.anonymous_student_id)
+        if real_user is None:
+            return None
         return {
-            'user_id': self.runtime.get_real_user(self.runtime.anonymous_student_id).id,
-            'user_login': self.runtime.get_real_user(self.runtime.anonymous_student_id).username,
-            'user_email': self.runtime.get_real_user(self.runtime.anonymous_student_id).email,
+            'user_id': real_user.id,
+            'user_login': real_user.username,
+            'user_email': real_user.email,
         }
 
-    def _get_student_input_no_auth(self, email=None):
-        if email is None:
-            return self._get_student_input()
+    def _get_student_input_no_auth(self, username=None):
+        print '=========================================================================='
+        if username is None:
+            return None
         else:
-            return {
-                'user_id': None,
-                'user_login': None,
-                'user_email': email,
-            }
+            try:
+                u = User.objects.get(username=username)
+                return {
+                    'user_id': u.id,
+                    'user_login': u.username,
+                    'user_email': u.email,
+                }
+            except User.DoesNotExist:
+                return None
 
     def _past_due(self):
         """

@@ -34,20 +34,38 @@ function AntXBlockShow(runtime, element)
 
         function disable_controllers(context)
         {
-            $(context).find(".controllers").find("button").toggleClass('disabled').attr("disabled", "disabled");
+            $(context).find("input").addClass('disabled').attr("disabled", "disabled");
+        }
+        
+        function enable_controllers(context)
+        {
+            $(context).find("input").removeClass('disabled').removeAttr("disabled");
         }
 
         function render(data) {
             $(element).find('.ant-content').html(template.main(data));
             render_bind();
         }
+                    
+        var deplainify = function(obj) {
+            for (var key in obj) {
+                try {
+                    if (obj.hasOwnProperty(key)) {
+                        obj[key] = deplainify(JSON.parse(obj[key]));
+                    }
+                } catch (e) {
+                    console.log('failed to deplainify', obj);
+                }
+            }
+            return obj;
+        };
 
         function render_bind() {
 
             /*
              * Start lab handler.
              */
-            $(element).find('.ant-start-lab').on('click', function(e) {
+            $(element).find('.ant-start-lab').off('click').on('click', function(e) {
                 $('.xblock-ant-success').removeClass('hidden');
                 var lab_window_settings = [
                     'height=600',
@@ -72,7 +90,7 @@ function AntXBlockShow(runtime, element)
                 lab_window.focus();
             });
 
-            $(element).find('.ant-check-lab').on('click', function(e) {
+            $(element).find('.ant-check-lab').off('click').on('click', function(e) {
                 $(element).find('input').addClass('disabled');
                 $.ajax({ url: urls.check, type: "POST", data: '{}', success: function(data){}});
                 $(this).val($(this).data('checking'));
@@ -83,49 +101,29 @@ function AntXBlockShow(runtime, element)
                 }, this), 3000);
             });
 
-            $(element).find('.staff-get-state-btn').on('click', function(e) {
+            $(element).find('.staff-get-state-btn').off('click').on('click', function(e) {
+                disable_controllers(element);
                 var data = {
-                    'user_id': $(element).find('input[name="user"]').val()
+                    'user_login': $(element).find('input[name="user"]').val()
                 };
                 $.ajax({ url: urls.get_state, type: "POST", data: JSON.stringify(data), success: function(data){
-                    var deplainify = function(obj) {
-                        for (var key in obj) {
-                            try {
-                                if (obj.hasOwnProperty(key)) {
-                                    obj[key] = deplainify(JSON.parse(obj[key]));
-                                }
-                            } catch (e) {
-
-                            }
-                        }
-                        return obj;
-                    };
                     var state = deplainify(data);
-                    $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>')
+                    $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>');
+                    enable_controllers(element);
                 }});
             });
-            $(element).find('.staff-reset-state-btn').on('click', function(e) {
+            $(element).find('.staff-reset-state-btn').off('click').on('click', function(e) {
                 if (!confirm('Do you really want to reset state?')) {
                     return;
                 }
+                disable_controllers(element);
                 var data = {
-                    'user_id': $(element).find('input[name="user"]').val()
+                    'user_login': $(element).find('input[name="user"]').val()
                 };
                 $.ajax({ url: urls.reset_state, type: "POST", data: JSON.stringify(data), success: function(data){
-                    var deplainify = function(obj) {
-                        for (var key in obj) {
-                            try {
-                                if (obj.hasOwnProperty(key)) {
-                                    obj[key] = deplainify(JSON.parse(obj[key]));
-                                }
-                            } catch (e) {
-
-                            }
-                        }
-                        return obj;
-                    };
                     var state = deplainify(data);
-                    $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>')
+                    $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>');
+                    enable_controllers(element);
                 }});
             });
         }
