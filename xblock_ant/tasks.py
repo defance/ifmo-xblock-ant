@@ -168,7 +168,7 @@ def submit_delayed_ant_precheck(task):
 
     :return: Поставленное в очередь задание
     """
-    return submit_task_grade(DelayedAntGraderTask, task, countdown=20)
+    return submit_task_grade(DelayedAntGraderTask, task, countdown=120)
 
 
 def submit_ant_check(task, countdown=None):
