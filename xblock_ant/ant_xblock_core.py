@@ -274,7 +274,7 @@ class AntXBlock(AntXBlockFields, XBlock):
             }
         except StudentModule.DoesNotExist:
             return {
-                'state': "Указанный пользователь не существует."
+                'state': "Модуль для указанного пользователя не существует."
             }
 
     @XBlock.json_handler
@@ -296,7 +296,7 @@ class AntXBlock(AntXBlockFields, XBlock):
             }
         except StudentModule.DoesNotExist:
             return {
-                'state': "Указанный пользователь не существует."
+                'state': "Модуль для указанного пользователя не существует."
             }
 
     @XBlock.json_handler
