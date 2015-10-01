@@ -126,6 +126,17 @@ function AntXBlockShow(runtime, element)
                     enable_controllers(element);
                 }});
             });
+            $(element).find('.staff-update-state-btn').off('click').on('click', function(e) {
+                disable_controllers(element);
+                var data = {
+                    'user_login': $(element).find('input[name="user"]').val()
+                };
+                $.ajax({ url: urls.check, type: "POST", data: JSON.stringify(data), success: function(data){
+                    var state = deplainify(data);
+                    $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>');
+                    enable_controllers(element);
+                }});
+            });
         }
 
         $(function($) { // onLoad

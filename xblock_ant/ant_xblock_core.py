@@ -217,17 +217,29 @@ class AntXBlock(AntXBlockFields, XBlock):
                 "message": "Время, отведённое на лабораторную работу, истекло.",
             }
 
-        student_input = self._get_student_input() if data.get('username') is None else self._get_student_input_no_auth(username=data.get('username'))
+        need_save, student_input = (True, self._get_student_input()) if data.get('user_login') is None else \
+            (False, self._get_student_input_no_auth(username=data.get('user_login')))
         if not student_input:
             return {
                 "result": "error",
-                "message": "Не удалось определить пользователя, для которого провести проверку",
+                "message": "Не удалось определить пользователя для проверки",
             }
-        task = reserve_task(self,
+
+        # Предварительно проверим наличие модуля, чтобы не инициировать
+        # проверку для несуществующего.
+        try:
+            StudentModule.objects.get(module_state_key=self.location,
+                                      student__username=student_input.get('user_login'))
+        except StudentModule.DoesNotExist:
+            return {
+                'state': "Модуль для указанного пользователя не существует."
+            }
+
+        task = reserve_task(self if need_save else None,
                             grader_payload=self._get_grader_payload(),
-                            system_payload=self._get_system_payload(),
+                            system_payload=self._get_system_payload(student_input.get('user_id')),
                             student_input=student_input,
-                            save=True,
+                            save=need_save,
                             task_type='ANT_CHECK')
         submit_ant_check(task, countdown=0)
         return {
@@ -298,11 +310,6 @@ class AntXBlock(AntXBlockFields, XBlock):
             return {
                 'state': "Модуль для указанного пользователя не существует."
             }
-
-    @XBlock.json_handler
-    def update_user_data(self, data, suffix=''):
-       assert self._is_staff()
-       user_id = data.get('user_login')
 
     @transaction.autocommit
     def save_now(self):
@@ -440,14 +447,14 @@ class AntXBlock(AntXBlockFields, XBlock):
             'attempts_url': self.attempts_url,
         }
 
-    def _get_system_payload(self):
+    def _get_system_payload(self, user_id=None):
         """
         Данные, позволяющие идентифицировать сам модуль.
 
         :return:
         """
         return {
-            'user_id': self.scope_ids.user_id,
+            'user_id': self.scope_ids.user_id if user_id is None else user_id,
             'course_id': unicode(self.course_id),
             'module_id': unicode(self.location),
             'max_score': self.weight,
@@ -459,7 +466,6 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         :return:
         """
-        print '**********************************************************************'
         real_user = self.runtime.get_real_user(self.runtime.anonymous_student_id)
         if real_user is None:
             return None
@@ -470,7 +476,6 @@ class AntXBlock(AntXBlockFields, XBlock):
         }
 
     def _get_student_input_no_auth(self, username=None):
-        print '=========================================================================='
         if username is None:
             return None
         else:
