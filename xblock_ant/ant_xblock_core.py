@@ -341,11 +341,16 @@ class AntXBlock(AntXBlockFields, XBlock):
                 task.task_output,
                 task.course_id,
                 task.module_id,
-                task.user_target.username,
+                task.user_target.username if task.user_target is not None else None,
                 task.task_type,
                 task.task_state,
             ])
-        return HTTPOk(body="\n".join(["\t".join(["" if j is None else str(j) for j in i]) for i in tasks]))
+        return HTTPOk(
+            body="\n".join(["\t".join(["" if j is None else str(j) for j in i]) for i in tasks]),
+            headers={
+                'Content-Disposition': 'attachment; filename=tasks_%s.tsv' % self.location,
+                'Content-Type': 'text/tab-separated-values'
+            })
 
     def _get_student_context(self):
         """
