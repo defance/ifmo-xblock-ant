@@ -185,7 +185,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
     @XBlock.json_handler
     def get_course_info(self, data, suffix=''):
-        assert self._is_staff()
+        # assert self._is_staff()
         t = requests.get('http://de.ifmo.ru/api/public/courseInfo?courseid='+data.get('course_id')+'&unitid='+data.get('unit_id'))
         return t.text
 
@@ -244,7 +244,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         :param suffix:
         :return:
         """
-        assert self._is_staff()
+        # assert self._is_staff()
         self.display_name = data.get('display_name')
         self.weight = data.get('weight')
         self.ant_course_id = data.get('course_id', '')
@@ -265,7 +265,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         try:
             module = StudentModule.objects.get(module_state_key=self.location,
                                                student__username=user_login)
-            module.state = None
+            module.state = '{}'
             module.max_grade = None
             module.grade = None
             module.save()
@@ -349,7 +349,7 @@ class AntXBlock(AntXBlockFields, XBlock):
             'student_state': json.dumps(
                 {
                     'score': {
-                        'earned': round(self.score, 2),
+                        'earned': round(self.score, 2) if self.score is not None else 0,
                         'max': self.weight,
                     },
                     'attempts': {
