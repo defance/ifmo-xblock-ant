@@ -1,4 +1,4 @@
-<section class="ant-block xmodule_display xmodule_CapaModule " data-student-state="{{student_state}}" {% if is_staff %}data-is-staff="True" data-url-check-no-auth="{{ check_no_auth }}" data-url-tasks-data="{{ get_tasks_data }}"{% endif %}>
+<section class="ant-block xmodule_display xmodule_CapaModule " data-id="{{id}}" data-student-state="{{student_state}}" {% if is_staff %}data-is-staff="True" data-url-check-no-auth="{{ check_no_auth }}" data-url-tasks-data="{{ get_tasks_data }}"  data-url-grades-data="{{ get_grades_data }}"{% endif %}>
 
     <script type="text/template" id="template-ant-block">
 
@@ -49,51 +49,87 @@
         {{student_state}}
     </div>
 
-    {% if is_staff %}
-        {% if not is_studio %}
-            <div class="wrap-instructor-info">
-                <a class="instructor-info-action" href="#{{id}}-debug-modal" id="{{id}}-debug-button">Отладочная информация</a>
-            	<a class="instructor-info-action" href="#{{id}}-tasks-modal" id="{{id}}-show-tasks-button">Очередь заданий</a>
-            </div>
-        {% endif %}
-    {% endif %}
 
     {% if is_staff %}
         {% if not is_studio %}
+
+            <hr/>
+
+            <div class="wrap-instructor-info">
+                <a class="instructor-info-action" href="#{{id}}-tools-modal" id="{{id}}-tools-button">Инструменты инструктора</a>
+                <a class="instructor-info-action" href="#{{id}}-debug-modal" id="{{id}}-debug-button">Отладочная информация</a>
+            	<a class="instructor-info-action" href="#{{id}}-tasks-modal" id="{{id}}-show-tasks-button">Выгрузка статистики</a>
+            </div>
+
             <section aria-hidden="true" class="modal staff-modal" id="{{id}}-debug-modal" style="width: 800px">
                 <div class="inner-wrapper" style="color: black">
-                    <header><h2>Состояние пользователя</h2></header>
+                    <header><h2>Отладочная информация</h2></header>
+                    <div>&nbsp;</div>
+                    <table>
+                        <tr>
+                            <th>id</th>
+                            <td>{{id}}</td>
+                        </tr>
+                        <tr>
+                            <th>location</th>
+                            <td>{{location}}</td>
+                        </tr>
+                        <tr>
+                            <th>weight</th>
+                            <td>{{weight}}</td>
+                        </tr>
+                        <tr>
+                            <th>ant_course_id</th>
+                            <td>{{ant_course_id}}</td>
+                        </tr>
+                        <tr>
+                            <th>ant_unit_id</th>
+                            <td>{{ant_unit_id}}</td>
+                        </tr>
+                    </table>
+                    <hr/>
+                    <p>
+                        <label for="{{id}}-staff-info-external-check">URL для запроса проверки:</label> <textarea id="{{id}}-staff-info-external-check" class="staff-info-external-check" cols="70" style="height: 60px;">N/A</textarea>
+                    </p>
+                </div>
+            </section>
+
+            <section aria-hidden="true" class="modal staff-modal" id="{{id}}-tasks-modal" style="width: 800px">
+                <div class="inner-wrapper" style="color: black">
+                    <header><h2>Выгрузка статистики</h2></header>
                     <div>&nbsp;</div>
                     <p>
-                        <b>URL для запроса проверки:</b> <textarea class="instructor-info-external-check" cols="70" rows="3">N/A</textarea>
+                        <input type="button" value="Очередь заданий" onclick="window.location=$('#{{id}}-staff-info-tasks-data').val()"/>
+                        <input type="button" value="Список оценок" onclick="window.location=$('#{{id}}-staff-info-grades-data').val()"/>
                     </p>
+                    <hr/>
+                    <p>
+                        <label for="{{id}}-staff-info-tasks-data">Очередь заданий:</label> <textarea id="{{id}}-staff-info-tasks-data" class="staff-info-tasks-data" cols="70" style="height: 60px">N/A</textarea>
+                    </p>
+                    <p>
+                        <label for="{{id}}-staff-info-grades-data">Список оценок:</label> <textarea id="{{id}}-staff-info-grades-data" class="staff-info-grades-data" cols="70" style="height: 60px">N/A</textarea>
+                    </p>
+                </div>
+            </section>
+
+            <section aria-hidden="true" class="modal staff-modal" id="{{id}}-tools-modal" style="width: 800px">
+                <div class="inner-wrapper" style="color: black">
+                    <header><h2>Инструменты инструктора</h2></header>
+                    <div>&nbsp;</div>
                     <div>
                         <label for="{{id}}-staff-user-input">Имя пользователя: </label>
                         <input type="text" id="{{id}}-staff-user-input" name="user">
                         <input type="button" value="Получить" class="button staff-get-state-btn" id="{{id}}-staff-get-state-button"/>
                         <input type="button" value="Сбросить" class="button staff-reset-state-btn" id="{{id}}-staff-reset-state-button"/>
-                        <input type="button" value="Проверить" class="button staff-update-state-btn" id="{{id}}-staff-update-state-button"/>
+                        <input type="button" value="Перепроверить" class="button staff-update-state-btn" id="{{id}}-staff-update-state-button"/>
                     </div>
                     <hr/>
                     <div id="{{id}}-staff-info">
-                        <p>Здесь отображается состояние пользователя</p>
+                        <p>Состояние пользователя</p>
                         <div class="staff-info-container" style="max-height: 600px; overflow-y: scroll;">
                             <pre>{{state}}</pre>
                         </div>
                     </div>
-                </div>
-            </section>
-        {% endif %}
-    {% endif %}
-
-    {% if is_staff %}
-        {% if not is_studio %}
-            <section aria-hidden="true" class="modal staff-modal" id="{{id}}-tasks-modal" style="width: 800px">
-                <div class="inner-wrapper" style="color: black">
-                    <header><h2>Очередь заданий</h2></header>
-                    <p>
-                        <b>URL для запроса проверки:</b> <textarea class="instructor-info-tasks-data" cols="70" rows="3">N/A</textarea>
-                    </p>
                 </div>
             </section>
         {% endif %}

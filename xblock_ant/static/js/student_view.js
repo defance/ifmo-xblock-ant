@@ -18,6 +18,8 @@ function AntXBlockShow(runtime, element)
             get_tasks_data: runtime.handlerUrl(element, 'get_tasks_data')
         };
 
+        var id = $(element).data('id');
+
         var get_template = function(tmpl){
             return _.template($(element).find(tmpl).text());
         };
@@ -25,12 +27,6 @@ function AntXBlockShow(runtime, element)
         var template = {
             main: get_template('#template-ant-block')
         };
-
-
-        function renderStaffInfo(data)
-        {
-            $(element).find('#staff-info').html(template.staff.info(data)).data(data);
-        }
 
         function disable_controllers(context)
         {
@@ -91,13 +87,22 @@ function AntXBlockShow(runtime, element)
             });
 
             $(element).find('.ant-check-lab').off('click').on('click', function(e) {
-                $(element).find('input').addClass('disabled');
+                disable_controllers(element);
                 $.ajax({ url: urls.check, type: "POST", data: '{}', success: function(data){}});
                 $(this).val($(this).data('checking'));
                 setTimeout($.proxy(function(){
-                    $.ajax({ url: urls.get_current_state, type: "POST", data: '{}', success: function(data){
-                        render(JSON.parse(data.student_state));
-                    }});
+                    $.ajax({
+                        url: urls.get_current_state,
+                        type: "POST",
+                        data: '{}',
+                        success: function(data){
+                            render(JSON.parse(data.student_state));
+                        },
+                        complete: function(data){
+                            console.info('ant-check-lab', data);
+                            enable_controllers(element);
+                        }
+                    });
                 }, this), 3000);
             });
 
@@ -106,12 +111,21 @@ function AntXBlockShow(runtime, element)
                 var data = {
                     'user_login': $(element).find('input[name="user"]').val()
                 };
-                $.ajax({ url: urls.get_state, type: "POST", data: JSON.stringify(data), success: function(data){
-                    var state = deplainify(data);
-                    $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>');
-                    enable_controllers(element);
-                }});
+                $.ajax({
+                    url: urls.get_state,
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    success: function(data){
+                        var state = deplainify(data);
+                        $(element).find('.staff-info-container').html('<pre>' + JSON.stringify(state, null, '  ') + '</pre>');
+                    },
+                    complete: function(data) {
+                        console.info('staff-get-state-btn', data);
+                        enable_controllers(element);
+                    }
+                });
             });
+
             $(element).find('.staff-reset-state-btn').off('click').on('click', function(e) {
                 if (!confirm('Do you really want to reset state?')) {
                     return;
@@ -120,22 +134,39 @@ function AntXBlockShow(runtime, element)
                 var data = {
                     'user_login': $(element).find('input[name="user"]').val()
                 };
-                $.ajax({ url: urls.reset_state, type: "POST", data: JSON.stringify(data), success: function(data){
-                    var state = deplainify(data);
-                    $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>');
-                    enable_controllers(element);
+                $.ajax({
+                    url: urls.reset_state,
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    success: function(data) {
+                        var state = deplainify(data);
+                        $(element).find('.staff-info-container').html('<pre>' + JSON.stringify(state, null, '  ') + '</pre>');
+                    },
+                    complete: function(data){
+                        console.info('staff-reset-state-btn', data);
+                        enable_controllers(element);
+
                 }});
             });
+
             $(element).find('.staff-update-state-btn').off('click').on('click', function(e) {
                 disable_controllers(element);
                 var data = {
                     'user_login': $(element).find('input[name="user"]').val()
                 };
-                $.ajax({ url: urls.check, type: "POST", data: JSON.stringify(data), success: function(data){
-                    var state = deplainify(data);
-                    $(element).find('.staff-info-container').html('<pre>'+ JSON.stringify(state, null, '  ') +'</pre>');
-                    enable_controllers(element);
-                }});
+                $.ajax({
+                    url: urls.check,
+                    type: "POST",
+                    data: JSON.stringify(data),
+                    success: function(data) {
+                        var state = deplainify(data);
+                        $(element).find('.staff-info-container').html('<pre>' + JSON.stringify(state, null, '  ') + '</pre>');
+                    },
+                    complete: function(data) {
+                        console.info('staff-update-state-btn', data);
+                        enable_controllers(element);
+                    }
+                });
             });
         }
 
@@ -147,8 +178,9 @@ function AntXBlockShow(runtime, element)
             var is_staff = block.attr("data-is-staff") == "True";
             if (is_staff) {
                 $(element).find('.instructor-info-action').leanModal();
-                $(element).find('.instructor-info-external-check').text(block.data('url-check-no-auth'));
-                $(element).find('.instructor-info-tasks-data').text(block.data('url-tasks-data'));
+                $(element).find('.staff-info-external-check').text(block.data('url-check-no-auth'));
+                $(element).find('.staff-info-tasks-data').text(block.data('url-tasks-data'));
+                $(element).find('.staff-info-grades-data').text(block.data('url-grades-data'));
             }
 
             var data = JSON.parse(state);

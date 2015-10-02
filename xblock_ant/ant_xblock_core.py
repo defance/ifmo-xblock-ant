@@ -348,7 +348,29 @@ class AntXBlock(AntXBlockFields, XBlock):
         return HTTPOk(
             body="\n".join(["\t".join(["" if j is None else str(j) for j in i]) for i in tasks]),
             headers={
-                'Content-Disposition': 'attachment; filename=tasks_%s.tsv' % self.location,
+                'Content-Disposition': 'attachment; filename=tasks_%s.tsv' % self.scope_ids.usage_id.block_id,
+                'Content-Type': 'text/tab-separated-values'
+            })
+
+    @XBlock.handler
+    def get_grades_data(self, data, suffix=''):
+        assert self._is_staff()
+        grades_objects = StudentModule.objects.filter(module_state_key=self.location)
+        grades = [['id', 'username', 'score', 'max_grade', 'state', 'created', 'modified']]
+        for grade in grades_objects:
+            grades.append([
+                grade.id,
+                grade.student.username if grade.student is not None else None,
+                grade.grade,
+                grade.max_grade,
+                grade.state,
+                grade.created,
+                grade.modified,
+            ])
+        return HTTPOk(
+            body="\n".join(["\t".join(["" if j is None else str(j) for j in i]) for i in grades]),
+            headers={
+                'Content-Disposition': 'attachment; filename=grades_%s.tsv' % self.scope_ids.usage_id.block_id,
                 'Content-Type': 'text/tab-separated-values'
             })
 
@@ -358,6 +380,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
         return {
+            'id': self.scope_ids.usage_id.block_id,
             'student_state': json.dumps(
                 {
                     'score': {
@@ -395,6 +418,14 @@ class AntXBlock(AntXBlockFields, XBlock):
             # js-runtime не генерируют схему, а этот -- да.
             'check_no_auth': self.runtime.handler_url(self, 'check_lab_external', thirdparty=True),
             'get_tasks_data': self.runtime.handler_url(self, 'get_tasks_data', thirdparty=True).replace('_noauth', ''),
+            'get_grades_data': self.runtime.handler_url(self, 'get_grades_data', thirdparty=True).replace('_noauth', ''),
+
+            # Debug window info
+            'location': self.location,
+            'ant_course_id':  self.ant_course_id,
+            'ant_unit_id':  self.ant_unit_id,
+            'ant_limit':  self.ant_attempts_limit,
+            'weight': self.weight,
         }
 
     @staticmethod
