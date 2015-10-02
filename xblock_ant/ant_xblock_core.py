@@ -425,6 +425,8 @@ class AntXBlock(AntXBlockFields, XBlock):
             'ant_course_id':  self.ant_course_id,
             'ant_unit_id':  self.ant_unit_id,
             'ant_limit':  self.ant_attempts_limit,
+            'lab_url': self.lab_url,
+            'attempts_url': self.attempts_url,
             'weight': self.weight,
         }
 
