@@ -78,7 +78,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
         return {
-            'score': round(self.score, 2),
+            'score': round(self.score * self.weight, 2),
             'total': self.weight,
         }
 
@@ -384,7 +384,7 @@ class AntXBlock(AntXBlockFields, XBlock):
             'student_state': json.dumps(
                 {
                     'score': {
-                        'earned': round(self.score, 2) if self.score is not None else 0,
+                        'earned': round(self.score * self.weight, 2) if self.score is not None else 0,
                         'max': self.weight,
                     },
                     'attempts': {
