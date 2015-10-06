@@ -379,7 +379,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         Получить контекст текущего пользователя для отображения шаблона.
         :return:
         """
-        return {
+        data = {
             'id': self.scope_ids.usage_id.block_id,
             'student_state': json.dumps(
                 {
@@ -409,26 +409,30 @@ class AntXBlock(AntXBlockFields, XBlock):
             'past_due': self._past_due(),
             'attempts_limit': self.attempts > self.ant_attempts_limit or
                               self.attempts == self.ant_attempts_limit and self.ant_status != 'RUNNING',
-
-            # This is probably studio, find out some more ways to determine this
-            'is_studio': self.runtime.get_real_user is None,
-            # 'tasks':tasks
-
-            # URL-ы для внешней работы с блоком, вынесены сюда, поскольку
-            # js-runtime не генерируют схему, а этот -- да.
-            'check_no_auth': self.runtime.handler_url(self, 'check_lab_external', thirdparty=True),
-            'get_tasks_data': self.runtime.handler_url(self, 'get_tasks_data', thirdparty=True).replace('_noauth', ''),
-            'get_grades_data': self.runtime.handler_url(self, 'get_grades_data', thirdparty=True).replace('_noauth', ''),
-
-            # Debug window info
-            'location': self.location,
-            'ant_course_id':  self.ant_course_id,
-            'ant_unit_id':  self.ant_unit_id,
-            'ant_limit':  self.ant_attempts_limit,
-            'lab_url': self.lab_url,
-            'attempts_url': self.attempts_url,
-            'weight': self.weight,
         }
+
+        if self._is_staff():
+            data.update({
+                # Debug window info
+                'location': str(self.location),
+                'ant_course_id':  self.ant_course_id,
+                'ant_unit_id':  self.ant_unit_id,
+                'ant_limit':  self.ant_attempts_limit,
+                'lab_url': self.lab_url,
+                'attempts_url': self.attempts_url,
+                'weight': self.weight,
+               
+                 # This is probably studio, find out some more ways to determine this
+                'is_studio': self.runtime.get_real_user is None,
+                # 'tasks':tasks
+
+                # URL-ы для внешней работы с блоком, вынесены сюда, поскольку
+                # js-runtime не генерируют схему, а этот -- да.
+                'check_no_auth': self.runtime.handler_url(self, 'check_lab_external', thirdparty=True),
+                'get_tasks_data': self.runtime.handler_url(self, 'get_tasks_data', thirdparty=True).replace('_noauth', ''),
+                'get_grades_data': self.runtime.handler_url(self, 'get_grades_data', thirdparty=True).replace('_noauth', ''),
+            })
+        return data
 
     @staticmethod
     def _get_resource(file_name):
