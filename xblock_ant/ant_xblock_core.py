@@ -172,8 +172,8 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         # Особенность ANT: пользователя нужно зарегистрировать на курс, прежде
         # чем показывать ему лабораторную
-        # register_url = REGISTER_URL % lab_meta
-        # requests.post(register_url)
+        register_url = REGISTER_URL % lab_meta
+        requests.post(register_url)
 
         # Делаем редирект на страницу с лабораторной
         lab_url = self.lab_url % lab_meta
