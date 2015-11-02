@@ -7,9 +7,9 @@ yml или ещё каком-нибудь. Но реальность слишк�
 """
 
 # Информация о попытках по почтовому адресу пользователя, курсу и модулю (юниту)
-# ATTEMPTS_URL = 'http://de.ifmo.ru/api/public/courseAttempts?pid=%(user_id)s&courseid=%(course_id)s&unitid=%(unit_id)s'
+ATTEMPTS_URL = 'http://de.ifmo.ru/api/public/courseAttempts?pid=%(user_id)s&courseid=%(course_id)s&unitid=%(unit_id)s'
 # ATTEMPTS_URL = 'http://de.ifmo.ru/api/public/courseAttempts?userlogin=%(user_email)s&courseid=%(course_id)s&unitid=%(unit_id)s'
-ATTEMPTS_URL = 'http://de.ifmo.ru/api/public/courseAttempts?userlogin=%(user_login)s&courseid=%(course_id)s&unitid=%(unit_id)s'
+# ATTEMPTS_URL = 'http://de.ifmo.ru/api/public/courseAttempts?userlogin=%(user_login)s&courseid=%(course_id)s&unitid=%(unit_id)s'
 
 # Адрес лабораторной работы по курсу и модулю (юниту)
 LAB_URL = "http://de.ifmo.ru/IfmoSSO?redirect=http://de.ifmo.ru/servlet/%%3FRule=EXTERNALLOGON%%26COMMANDNAME=getCourseUnit%%26DATA=UNIT_ID=%(unit_id)s|COURSE_ID=%(course_id)s"
