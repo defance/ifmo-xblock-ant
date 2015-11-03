@@ -141,7 +141,7 @@ class AntCheckTask(GraderTaskBase):
         # параметрами.
         # Дополнительно проверим таймаут для проверки, чтобы не ставить
         # проверку моментально.
-        if state['ant_status'] == 'RUNNING' and grader_payload.get('ant_time_limit', 0) > 0:
+        if state.get('ant_status') == 'RUNNING' and grader_payload.get('ant_time_limit', 0) > 0:
             new_task = reserve_task(None, save=True,
                                     grader_payload=grader_payload,
                                     system_payload=system_payload,
