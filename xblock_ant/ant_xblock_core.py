@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
-from ifmo_celery_grader.models import GraderTask
-from xblock_ant.ant_xblock_fields import AntXBlockFields
-from xblock_ant import utils as ant_utils
+
 from celery.states import PENDING
 from courseware.models import StudentModule
-from xblock.core import XBlock
-from xblock.fragment import Fragment
-from webob.exc import HTTPFound, HTTPForbidden, HTTPOk, HTTPInternalServerError
 from django.db import transaction
 from django.contrib.auth.models import User
+from ifmo_celery_grader.models import GraderTask
+from xblock.core import XBlock
+from xblock.fragment import Fragment
 from xmodule.util.duedate import get_extended_due_date
+from webob.exc import HTTPFound, HTTPForbidden, HTTPOk, HTTPInternalServerError
 
 import datetime
 import json
 import pytz
 import requests
 
+from xblock_ant import utils as ant_utils
+from xblock_ant.ant_xblock_fields import AntXBlockFields
 from xblock_ant.tasks import submit_delayed_ant_precheck, submit_ant_check, reserve_task
-from .settings import *
+from xblock_ant.settings import CONFIGURATION as CONFIG
 
 
 class AntXBlock(AntXBlockFields, XBlock):
@@ -171,9 +172,12 @@ class AntXBlock(AntXBlockFields, XBlock):
         self.save_now()
 
         # Особенность ANT: пользователя нужно зарегистрировать на курс, прежде
-        # чем показывать ему лабораторную
-        register_url = REGISTER_URL % lab_meta
-        requests.post(register_url)
+        # чем показывать ему лабораторную; делаем это в том случае, если есть
+        # url для регистрации в конфигурации.
+        register_url = CONFIG.get('REGISTER_URL')
+        if register_url is not None:
+            register_url = register_url % lab_meta
+            requests.post(register_url)
 
         # Делаем редирект на страницу с лабораторной
         lab_url = self.lab_url % lab_meta
@@ -186,7 +190,7 @@ class AntXBlock(AntXBlockFields, XBlock):
     @XBlock.json_handler
     def get_course_info(self, data, suffix=''):
         # assert self._is_staff()
-        t = requests.get('http://de.ifmo.ru/api/public/courseInfo?courseid='+data.get('course_id')+'&unitid='+data.get('unit_id'))
+        t = requests.get(CONFIG.get('COURSE_INFO') % data)
         return t.text
 
     @XBlock.json_handler
@@ -200,8 +204,6 @@ class AntXBlock(AntXBlockFields, XBlock):
         Вызывается, когда пользователь нажал кнопку "Проверить лабораторную".
 
         :param data:
-        :param suffix:
-        :param email: 
         :return:
         """
 
@@ -264,10 +266,10 @@ class AntXBlock(AntXBlockFields, XBlock):
         self.content = data.get('content', '')
         self.ant_time_limit = data.get('time_limit', 0)
         self.ant_attempts_limit = data.get('attempts_limit', 0)
-        new_attempts_url = data.get('attempts_url', ATTEMPTS_URL)
-        self.attempts_url = new_attempts_url if new_attempts_url not in (None, '') else ATTEMPTS_URL
-        new_lab_url = data.get('lab_url', LAB_URL)
-        self.lab_url = new_lab_url if new_lab_url not in (None, '') else LAB_URL
+        new_attempts_url = data.get('attempts_url', CONFIG.get('ATTEMPTS_URL'))
+        self.attempts_url = new_attempts_url if new_attempts_url not in (None, '') else CONFIG.get('ATTEMPTS_URL')
+        new_lab_url = data.get('lab_url', CONFIG.get('LAB_URL'))
+        self.lab_url = new_lab_url if new_lab_url not in (None, '') else CONFIG.get('LAB_URL')
         return '{}'
 
     @XBlock.json_handler
@@ -407,8 +409,9 @@ class AntXBlock(AntXBlockFields, XBlock):
             ),
             'is_staff': getattr(self.xmodule_runtime, 'user_is_staff', False),
             'past_due': self._past_due(),
-            'attempts_limit': self.attempts > self.ant_attempts_limit or
-                              self.attempts == self.ant_attempts_limit and self.ant_status != 'RUNNING',
+            'attempts_limit':
+                self.attempts > self.ant_attempts_limit or
+                self.attempts == self.ant_attempts_limit and self.ant_status != 'RUNNING',
         }
 
         if self._is_staff():
@@ -422,15 +425,18 @@ class AntXBlock(AntXBlockFields, XBlock):
                 'attempts_url': self.attempts_url,
                 'weight': self.weight,
                
-                 # This is probably studio, find out some more ways to determine this
+                # This is probably studio, find out some more ways to determine this
                 'is_studio': self.runtime.get_real_user is None,
                 # 'tasks':tasks
 
                 # URL-ы для внешней работы с блоком, вынесены сюда, поскольку
                 # js-runtime не генерируют схему, а этот -- да.
-                'check_no_auth': self.runtime.handler_url(self, 'check_lab_external', thirdparty=True),
-                'get_tasks_data': self.runtime.handler_url(self, 'get_tasks_data', thirdparty=True).replace('_noauth', ''),
-                'get_grades_data': self.runtime.handler_url(self, 'get_grades_data', thirdparty=True).replace('_noauth', ''),
+                'check_no_auth':
+                    self.runtime.handler_url(self, 'check_lab_external', thirdparty=True),
+                'get_tasks_data':
+                    self.runtime.handler_url(self, 'get_tasks_data', thirdparty=True).replace('_noauth', ''),
+                'get_grades_data':
+                    self.runtime.handler_url(self, 'get_grades_data', thirdparty=True).replace('_noauth', ''),
             })
         return data
 
