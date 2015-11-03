@@ -17,4 +17,4 @@ LAB_URL = "http://de.ifmo.ru/IfmoSSO?redirect=http://de.ifmo.ru/servlet/%%3FRule
 # LAB_URL = "http://community.npoed.ru/oauth/authorize.php?response_type=code&client_id=1930ca015234cfc686e2f085a30787dca47294113e1a8e3bbfb5686689e35d29&redirect_uri=https://de.ifmo.ru/api/public/npoedOAuthEnter&state=COMMANDNAME=getCourseUnit%%26DATA=UNIT_ID=%(unit_id)s%%7CCOURSE_ID=%(course_id)s"
 
 # Адрес регистрации пользователя на курс внутри СУО
-REGISTER_URL = 'http://de.ifmo.ru/api/public/getCourseAccess?pid=%(sso_id)s&courseid=%(course_id)s'
+REGISTER_URL = 'http://de.ifmo.ru/api/public/getCourseAccess?pid=%(user_login)s&courseid=%(course_id)s'
