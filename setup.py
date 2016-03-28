@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='ifmo-xblock-academicnt',
-    version='3.0',
+    version='4.0',
     install_requires=[
         'django',
         'path.py',
@@ -18,7 +18,7 @@ setup(
         'ifmo-edx-celery-grader',
     ],
     dependency_links=[
-        'git+https://de.ifmo.ru/scm/git/ifmo-edx-celery-grader@v3.0#egg=ifmo-edx-celery-grader-3.0'
+        'git+https://de.ifmo.ru/scm/git/ifmo-edx-celery-grader@c0a08db348ad848db3654ab84c7e78a17027ceee#egg=ifmo-edx-celery-grader-4.0'
     ],
     packages=[
         'xblock_ant',
