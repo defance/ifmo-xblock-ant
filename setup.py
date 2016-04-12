@@ -18,7 +18,7 @@ setup(
         'ifmo-edx-celery-grader',
     ],
     dependency_links=[
-        'git+https://de.ifmo.ru/scm/git/ifmo-edx-celery-grader@c0a08db348ad848db3654ab84c7e78a17027ceee#egg=ifmo-edx-celery-grader-4.0'
+        'git+https://de.ifmo.ru/scm/git/ifmo-edx-celery-grader@c0a08db348ad848db3654ab84c7e78a17027ceee#egg=ifmo-edx-celery-grader==4.0'
     ],
     packages=[
         'xblock_ant',
