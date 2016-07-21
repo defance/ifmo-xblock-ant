@@ -266,10 +266,8 @@ class AntXBlock(AntXBlockFields, XBlock):
         self.content = data.get('content', '')
         self.ant_time_limit = data.get('time_limit', 0)
         self.ant_attempts_limit = data.get('attempts_limit', 0)
-        new_attempts_url = data.get('attempts_url', CONFIG.get('ATTEMPTS_URL'))
-        self.attempts_url = new_attempts_url if new_attempts_url not in (None, '') else CONFIG.get('ATTEMPTS_URL')
-        new_lab_url = data.get('lab_url', CONFIG.get('LAB_URL'))
-        self.lab_url = new_lab_url if new_lab_url not in (None, '') else CONFIG.get('LAB_URL')
+        self.attempts_url = data.get('attempts_url').strip() or None
+        self.lab_url = data.get('lab_url').strip() or None
         return '{}'
 
     @XBlock.json_handler

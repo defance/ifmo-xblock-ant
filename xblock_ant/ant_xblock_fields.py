@@ -3,7 +3,7 @@
 from xblock.fields import Scope, Integer, String, Float, DateTime
 # from xblock.fields import UserScope, BlockScope
 
-from xblock_ant.settings import CONFIGURATION as CONFIG
+from xblock_ant.settings import CONFIGURATION as CONFIG, DefaultedDescriptor
 
 
 class AntXBlockFields(object):
@@ -119,7 +119,8 @@ class AntXBlockFields(object):
     )
 
     # Адрес для вытягивания информации о выполнении
-    attempts_url = String(
+    attempts_url = DefaultedDescriptor(
+        base_class=String,
         display_name="Attempts API url",
         default=CONFIG.get('ATTEMPTS_URL'),
         help="Url api to get latest user attempts.",
@@ -128,7 +129,8 @@ class AntXBlockFields(object):
     )
 
     # Адрес с лабораторной, открывается в попапе
-    lab_url = String(
+    lab_url = DefaultedDescriptor(
+        base_class=String,
         display_name="Lab API url",
         default=CONFIG.get('LAB_URL'),
         help="Lab url.",
