@@ -2,7 +2,6 @@
 
 from celery.states import PENDING
 from courseware.models import StudentModule
-from django.db import transaction
 from django.contrib.auth.models import User
 from ifmo_celery_grader.models import GraderTask
 from xblock.core import XBlock
@@ -311,7 +310,6 @@ class AntXBlock(AntXBlockFields, XBlock):
                 'state': "Модуль для указанного пользователя не существует."
             }
 
-    @transaction.autocommit
     def save_now(self):
         """
         Сохранить модуль в обход транзакций.
