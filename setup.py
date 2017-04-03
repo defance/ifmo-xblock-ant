@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='ifmo-xblock-academicnt',
-    version='4.1',
+    version='4.1.1',
     install_requires=[
         'django',
         'path.py',
