@@ -117,7 +117,7 @@ class AntCheckTask(GraderTaskBase):
         if latest_attempt is not None:
 
             # ... запишем баллы, историю, количество попыток вцелом
-            module.grade = max(map(lambda x: x.get('result', 0), response['attempts']))
+            module.grade = max(map(lambda x: x.get('result', 0) or 0, response['attempts']))
             if module.grade is not None:
                 state['score'] = module.grade / module.max_grade * system_payload.get('max_score', 1)
 
