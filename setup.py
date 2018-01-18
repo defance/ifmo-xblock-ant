@@ -8,7 +8,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='ifmo-xblock-academicnt',
-    version='4.1.1',
+    version='4.1.2',
     install_requires=[
         'django',
         'path.py',
@@ -24,9 +24,9 @@ setup(
     license='BSD License',
     description='Package provides celery grader.',
     long_description=README,
-    url='http://www.de.ifmo.ru/',
+    url='https://www.de.ifmo.ru/',
     author='Dmitry Ivanyushin',
-    author_email='d.ivanyushin@cde.ifmo.ru',
+    author_email='defance@gmail.com',
     classifiers=[
         'Environment :: Web Environment',
         'Framework :: Django',
