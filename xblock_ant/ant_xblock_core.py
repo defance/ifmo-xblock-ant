@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from celery.states import PENDING
-from courseware.models import StudentModule
-from django.contrib.auth.models import User
-from ifmo_celery_grader.models import GraderTask
 from xblock.core import XBlock
 from xblock.fragment import Fragment
 from xmodule.util.duedate import get_extended_due_date
@@ -14,7 +11,7 @@ import json
 import pytz
 import requests
 
-from xblock_ant import utils as ant_utils
+from xblock_ant.utils import resource_string, render_template
 from xblock_ant.ant_xblock_fields import AntXBlockFields
 from xblock_ant.tasks import submit_delayed_ant_precheck, submit_ant_check, reserve_task
 from xblock_ant.settings import CONFIGURATION as CONFIG
@@ -103,6 +100,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
 
+        from ifmo_celery_grader.models import GraderTask
         # Проверим лабораторную на ошибки конфигурации
         has_errors, data_obj = self._validate_lab_config()
         if has_errors:
@@ -228,6 +226,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         # Предварительно проверим наличие модуля, чтобы не инициировать
         # проверку для несуществующего.
+        from courseware.models import StudentModule
         try:
             StudentModule.objects.get(module_state_key=self.location,
                                       student__username=student_input.get('user_login'))
@@ -272,6 +271,7 @@ class AntXBlock(AntXBlockFields, XBlock):
     @XBlock.json_handler
     def reset_user_data(self, data, suffix=''):
         assert self._is_staff()
+        from courseware.models import StudentModule
         user_login = data.get('user_login')
         try:
             module = StudentModule.objects.get(module_state_key=self.location,
@@ -298,6 +298,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         :return:
         """
         assert self._is_staff()
+        from courseware.models import StudentModule
         user_login = data.get('user_login')
         try:
             module = StudentModule.objects.get(module_state_key=self.location,
@@ -325,6 +326,7 @@ class AntXBlock(AntXBlockFields, XBlock):
     @XBlock.handler
     def get_tasks_data(self, data, suffix=''):
         assert self._is_staff()
+        from ifmo_celery_grader.models import GraderTask
         grader_tasks = GraderTask.objects.filter(module_id=self.location)
         tasks = [['id', 'task_id', 'student_input', 'grader_payload', 'system_payload', 'task_input', 'task_output',
                   'course_id', 'module_id', 'user_target.username', 'task_type', 'task_state']]
@@ -353,6 +355,7 @@ class AntXBlock(AntXBlockFields, XBlock):
     @XBlock.handler
     def get_grades_data(self, data, suffix=''):
         assert self._is_staff()
+        from courseware.models import StudentModule
         grades_objects = StudentModule.objects.filter(module_state_key=self.location)
         grades = [['id', 'username', 'score', 'max_grade', 'state', 'created', 'modified']]
         for grade in grades_objects:
@@ -445,7 +448,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         :return: Содержимое
         """
-        return ant_utils.resource_string(file_name, package_name='xblock_ant')
+        return resource_string(file_name, package_name='xblock_ant')
 
     @staticmethod
     def _render_template(template_name, context=None):
@@ -457,7 +460,7 @@ class AntXBlock(AntXBlockFields, XBlock):
 
         :return: Содержимое
         """
-        return ant_utils.render_template(template_name, context=context, package_name='xblock_ant')
+        return render_template(template_name, context=context, package_name='xblock_ant')
 
     def _get_task_data(self):
         """
@@ -520,6 +523,7 @@ class AntXBlock(AntXBlockFields, XBlock):
         }
 
     def _get_student_input_no_auth(self, username=None):
+        from django.contrib.auth.models import User
         if username is None:
             return None
         else:
