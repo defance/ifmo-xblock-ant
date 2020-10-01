@@ -10,7 +10,7 @@ Add the following line in `requirements.txt`:
 
 ```
 -e git+https://github.com/openeduITMO/ifmo-edx-celery-grader@v4.0#egg=ifmo-edx-celery-grader==4.0
--e git+https://github.com/openeduITMO/ifmo-xblock-ant@v4.1#egg=ifmo-xblock-ant==4.1
+-e git+https://github.com/openeduITMO/ifmo-xblock-ant@v9.0#egg=ifmo-xblock-ant==9.0
 ```
 
 ## Installation
