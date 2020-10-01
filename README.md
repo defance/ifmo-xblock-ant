@@ -4,6 +4,8 @@ XBlock for edx-platfrom implementing interconnection between Open edX and Academ
 
 ## Requirements
 
+XBlock is compatible with the 9-th openEdx named release _Ironwood_, and most likely in not compatible with any other.
+
 Add the following line in `requirements.txt`:
 
 ```
